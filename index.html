@@ -138,28 +138,14 @@
         <a href="/">Home</a>
         <button id="mobile-services-toggle" type="button">Services</button>
         <a href="/careers/">Careers</a>
-        <a href="#chatbot-container">Chatbot</a>
+        <a href="#chatbot-container" id="open-chatbot-link">Chatbot</a>
         <a href="/contact/">Contact</a>
       </div>
     </nav>
 
-    <div
-      id="chatbot-container"
-      role="dialog"
-      aria-modal="true"
-      data-chat-endpoint="https://your-cloudflare-worker.example.com/chat"
-    >
+    <div id="chatbot-container" role="dialog" aria-label="Gabo chatbot">
       <div id="chatbot-header">
-        <span id="title" data-en="OPS AI Chatbot" data-es="Chatbot OPS AI"
-          >OPS AI Chatbot</span
-        >
-        <div>
-          <span id="langCtrl" class="ctrl">ES</span>&nbsp;|&nbsp;<span
-            id="themeCtrl"
-            class="ctrl"
-            >Dark</span
-          >
-        </div>
+        <span>Gabo</span>
       </div>
       <div id="chat-log" aria-live="polite"></div>
       <div id="chatbot-form-container">
@@ -169,21 +155,12 @@
             type="text"
             placeholder="Type your message..."
             required
-            maxlength="256"
-            data-en-ph="Type your message..."
-            data-es-ph="Escriba su mensaje..."
-          /><button id="chatbot-send" type="submit" disabled aria-label="Send">
-            <i class="fas fa-paper-plane"></i>
+            maxlength="1000"
+          /><button id="chatbot-send" type="submit" aria-label="Send">
+            Send
           </button>
         </form>
-        <label class="human-check"
-          ><input type="checkbox" id="human-check" /><span
-            id="human-label"
-            data-en="I am human"
-            data-es="Soy humano"
-            >I am human</span
-          ></label
-        >
+        <button id="chatbot-close-footer" type="button">Close</button>
       </div>
     </div>
     <script src="/assets/main.js"></script>
