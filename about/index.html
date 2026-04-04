@@ -56,9 +56,17 @@
         ><a href="/contact/">Contact</a>
       </div>
     </nav>
-    <div id="chatbot-container" role="dialog" aria-label="Gabo chatbot">
+    <div id="chatbot-container" class="minimized" role="dialog" aria-label="Gabo chatbot">
       <div id="chatbot-header">
         <span>Gabo</span>
+        <div id="chatbot-header-controls">
+          <button id="chatbot-minimize" type="button" aria-label="Minimize">
+            &minus;
+          </button>
+          <button id="chatbot-close" type="button" aria-label="Close">
+            &#10005;
+          </button>
+        </div>
       </div>
       <div id="chat-log" aria-live="polite"></div>
       <div id="chatbot-form-container">
@@ -66,15 +74,26 @@
           <input
             id="chatbot-input"
             type="text"
-            placeholder="Type your message..."
+            placeholder="Type your message here"
             required
             maxlength="1000"
           /><button id="chatbot-send" type="submit" aria-label="Send">
             Send
           </button>
         </form>
+        <button id="chatbot-close-footer" type="button">Close</button>
       </div>
     </div>
+    <div id="chatbot-backdrop" class="hidden" aria-hidden="true"></div>
+    <button
+      id="chatbot-launcher"
+      class="visible"
+      type="button"
+      aria-label="Open chatbot"
+      aria-expanded="false"
+    >
+      💬
+    </button>
     <script src="/assets/main.js"></script>
   </body>
 </html>
