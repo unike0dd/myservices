@@ -56,13 +56,35 @@
     topbar.appendChild(nav);
   }
 
+  function ensureSkipLink() {
+    if (document.querySelector(".skip-link")) return;
+    const target =
+      document.querySelector("main") ||
+      document.querySelector(".hero") ||
+      document.querySelector(".section") ||
+      document.body.firstElementChild;
+    if (!target) return;
+    if (!target.id) target.id = "main-content";
+    const skipLink = document.createElement("a");
+    skipLink.className = "skip-link";
+    skipLink.href = "#" + target.id;
+    skipLink.textContent = "Skip to main content";
+    document.body.insertAdjacentElement("afterbegin", skipLink);
+  }
+
   ensurePrimaryNav();
   ensureChatbotShell();
+  ensureSkipLink();
 
   const serviceBtn = document.getElementById("mobile-services-toggle");
   const dropup = document.getElementById("services-dropup");
   if (serviceBtn && dropup) {
-    serviceBtn.addEventListener("click", () => dropup.classList.toggle("open"));
+    serviceBtn.setAttribute("aria-expanded", "false");
+    serviceBtn.setAttribute("aria-controls", "services-dropup");
+    serviceBtn.addEventListener("click", () => {
+      const isOpen = dropup.classList.toggle("open");
+      serviceBtn.setAttribute("aria-expanded", String(isOpen));
+    });
   }
 
   const qs = (s) => document.querySelector(s);

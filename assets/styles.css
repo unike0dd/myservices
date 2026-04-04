@@ -21,6 +21,20 @@ body {
   line-height: 1.6;
   padding-bottom: 90px;
 }
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0.5rem;
+  z-index: 200;
+  background: #ffffff;
+  color: var(--brand-navy);
+  border: 2px solid var(--brand-blue);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+}
+.skip-link:focus {
+  left: 0.8rem;
+}
 h1,
 h2,
 h3,
@@ -493,5 +507,12 @@ textarea {
     height: 90vh;
     min-height: 90vh;
     max-height: 90vh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
   }
 }
