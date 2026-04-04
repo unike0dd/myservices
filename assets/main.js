@@ -1,4 +1,64 @@
 (function () {
+  function ensureChatbotShell() {
+    if (document.getElementById("chatbot-launcher")) return;
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
+    <div id="chatbot-container" class="minimized" role="dialog" aria-label="Gabo chatbot">
+      <div id="chatbot-header">
+        <span>Gabo</span>
+        <div id="chatbot-header-controls">
+          <button id="chatbot-minimize" type="button" aria-label="Minimize">&minus;</button>
+          <button id="chatbot-close" type="button" aria-label="Close">&#10005;</button>
+        </div>
+      </div>
+      <div id="chat-log" aria-live="polite"></div>
+      <div id="chatbot-form-container">
+        <form id="chatbot-input-row" autocomplete="off">
+          <input
+            id="chatbot-input"
+            type="text"
+            placeholder="Type your message here"
+            required
+            maxlength="1000"
+          />
+          <button id="chatbot-send" type="submit" aria-label="Send">Send</button>
+        </form>
+        <button id="chatbot-close-footer" type="button">Close</button>
+      </div>
+    </div>
+    <div id="chatbot-backdrop" class="hidden" aria-hidden="true"></div>
+    <button
+      id="chatbot-launcher"
+      class="visible"
+      type="button"
+      aria-label="Open chatbot"
+      aria-expanded="false"
+    >
+      💬
+    </button>`,
+    );
+  }
+
+  function ensurePrimaryNav() {
+    if (document.querySelector(".main-nav")) return;
+    const topbar = document.querySelector("header .topbar");
+    if (!topbar) return;
+    const nav = document.createElement("nav");
+    nav.className = "main-nav";
+    nav.innerHTML = `
+      <a href="/about/">About</a>
+      <a href="/services/">Services</a>
+      <a href="/careers/">Careers</a>
+      <a href="/contact/">Contact</a>
+      <a href="/learning/">Learning</a>
+    `;
+    topbar.appendChild(nav);
+  }
+
+  ensurePrimaryNav();
+  ensureChatbotShell();
+
   const serviceBtn = document.getElementById("mobile-services-toggle");
   const dropup = document.getElementById("services-dropup");
   if (serviceBtn && dropup) {
