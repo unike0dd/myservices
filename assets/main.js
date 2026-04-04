@@ -102,7 +102,8 @@
       }
     }
 
-    if (!wroteContent && !bubble.textContent.trim()) bubble.textContent = "No reply.";
+    if (!wroteContent && !bubble.textContent.trim())
+      bubble.textContent = "No reply.";
   }
 
   if (!canTalkToWorker()) {
