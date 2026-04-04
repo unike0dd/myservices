@@ -10,7 +10,6 @@
   const form = qs("#chatbot-input-row");
   const input = qs("#chatbot-input");
   const send = qs("#chatbot-send");
-  const statusNode = qs("#chatbot-status");
   const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
   const WORKER_CHAT = WORKER_BASE + "/api/chat";
   const WORKER_MODE = "iframe_service_qa";
@@ -22,10 +21,6 @@
   };
   const CURRENT_ORIGIN = window.location.origin;
   const OPS_ASSET_ID = ORIGIN_ASSET_MAP[CURRENT_ORIGIN] || "";
-
-  function setStatus(text) {
-    if (statusNode) statusNode.textContent = text;
-  }
 
   function addMsg(txt, cls) {
     if (!log) return;
@@ -107,7 +102,6 @@
   }
 
   if (!canTalkToWorker()) {
-    setStatus("Unavailable");
     if (send) send.disabled = true;
     if (input) input.disabled = true;
   }
@@ -122,15 +116,12 @@
       input.value = "";
       input.focus();
       send.disabled = true;
-      setStatus("Thinking");
       const botBubble = addMsg("...", "bot");
 
       try {
         await streamWorkerReply(msg, botBubble);
-        setStatus("Ready");
       } catch (_err) {
         botBubble.remove();
-        setStatus("Error");
       } finally {
         send.disabled = false;
       }
