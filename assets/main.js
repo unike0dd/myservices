@@ -6,6 +6,13 @@
   }
 
   const qs = (s) => document.querySelector(s);
+  const chatbot = qs("#chatbot-container");
+  const backdrop = qs("#chatbot-backdrop");
+  const launcher = qs("#chatbot-launcher");
+  const openLink = qs("#open-chatbot-link");
+  const closeBtn = qs("#chatbot-close");
+  const closeFooterBtn = qs("#chatbot-close-footer");
+  const minimizeBtn = qs("#chatbot-minimize");
   const log = qs("#chat-log");
   const form = qs("#chatbot-input-row");
   const input = qs("#chatbot-input");
@@ -22,6 +29,29 @@
   };
   const CURRENT_ORIGIN = window.location.origin;
   const OPS_ASSET_ID = ORIGIN_ASSET_MAP[CURRENT_ORIGIN] || "";
+
+  function openChatbot() {
+    if (!chatbot || !backdrop || !launcher) return;
+    chatbot.classList.remove("minimized");
+    backdrop.classList.remove("hidden");
+    launcher.classList.remove("visible");
+    launcher.setAttribute("aria-expanded", "true");
+    if (input && !input.disabled) input.focus();
+  }
+
+  function closeChatbot() {
+    if (!chatbot || !backdrop || !launcher) return;
+    chatbot.classList.add("minimized");
+    backdrop.classList.add("hidden");
+    launcher.classList.add("visible");
+    launcher.setAttribute("aria-expanded", "false");
+  }
+
+  function onEscClose(e) {
+    if (e.key === "Escape" && chatbot && !chatbot.classList.contains("minimized")) {
+      closeChatbot();
+    }
+  }
 
   function setStatus(text) {
     if (statusNode) statusNode.textContent = text;
@@ -136,4 +166,17 @@
       }
     });
   }
+
+  if (launcher) launcher.addEventListener("click", openChatbot);
+  if (openLink) {
+    openLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      openChatbot();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener("click", closeChatbot);
+  if (closeFooterBtn) closeFooterBtn.addEventListener("click", closeChatbot);
+  if (minimizeBtn) minimizeBtn.addEventListener("click", closeChatbot);
+  if (backdrop) backdrop.addEventListener("click", closeChatbot);
+  document.addEventListener("keydown", onEscClose);
 })();

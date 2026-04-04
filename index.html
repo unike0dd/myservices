@@ -138,15 +138,38 @@
         <a href="/">Home</a>
         <button id="mobile-services-toggle" type="button">Services</button>
         <a href="/careers/">Careers</a>
-        <a href="#chatbot-container">Chatbot</a>
+        <a href="#chatbot-container" id="open-chatbot-link">Chatbot</a>
         <a href="/contact/">Contact</a>
       </div>
     </nav>
 
-    <div id="chatbot-container" role="dialog" aria-label="Chattia chatbot">
+    <div id="chatbot-backdrop" aria-hidden="true"></div>
+    <button
+      id="chatbot-launcher"
+      type="button"
+      aria-label="Open chatbot"
+      aria-controls="chatbot-container"
+      aria-expanded="true"
+    >
+      💬
+    </button>
+    <div
+      id="chatbot-container"
+      role="dialog"
+      aria-label="Chattia chatbot"
+      aria-modal="true"
+    >
       <div id="chatbot-header">
         <span>Chattia</span>
-        <span id="chatbot-status">Ready</span>
+        <div id="chatbot-header-controls">
+          <span id="chatbot-status">Ready</span>
+          <button id="chatbot-minimize" type="button" aria-label="Minimize chatbot">
+            _
+          </button>
+          <button id="chatbot-close" type="button" aria-label="Close chatbot">
+            ×
+          </button>
+        </div>
       </div>
       <div id="chat-log" aria-live="polite"></div>
       <div id="chatbot-form-container">
@@ -161,6 +184,7 @@
             Send
           </button>
         </form>
+        <button id="chatbot-close-footer" type="button">Close</button>
       </div>
     </div>
     <script src="/assets/main.js"></script>
