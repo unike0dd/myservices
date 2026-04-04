@@ -37,7 +37,7 @@ a:hover {
   text-decoration: underline;
 }
 .container {
-  width: min(1100px, 92%);
+  width: min(1200px, 92vw);
   margin: 0 auto;
 }
 header {
@@ -67,7 +67,10 @@ header {
   font-size: 0.95rem;
 }
 .hero {
-  padding: 4rem 0 3.5rem;
+  min-height: calc(100svh - 72px);
+  display: flex;
+  align-items: center;
+  padding: clamp(2.5rem, 6vh, 5rem) 0 clamp(2rem, 5vh, 4rem);
   background: #fff;
   border-bottom: 1px solid var(--border);
 }
@@ -352,6 +355,9 @@ textarea {
   color: var(--brand-navy);
 }
 @media (max-width: 900px) {
+  .hero {
+    min-height: auto;
+  }
   .grid.four {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -366,6 +372,17 @@ textarea {
     right: auto;
     bottom: 110px;
     width: min(320px, 85vw);
+  }
+}
+@media (max-width: 1200px) and (min-width: 901px) {
+  .grid.four {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-height: 760px) and (min-width: 901px) {
+  .hero {
+    min-height: auto;
+    padding: 2.75rem 0;
   }
 }
 @media (max-width: 640px) {
