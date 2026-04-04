@@ -11,7 +11,6 @@
   const input = qs("#chatbot-input");
   const send = qs("#chatbot-send");
   const statusNode = qs("#chatbot-status");
-
   const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
   const WORKER_CHAT = WORKER_BASE + "/api/chat";
   const WORKER_MODE = "iframe_service_qa";
@@ -118,13 +117,11 @@
 
       const msg = input.value.trim();
       if (!msg || !canTalkToWorker()) return;
-
       addMsg(msg, "user");
       input.value = "";
       input.focus();
       send.disabled = true;
       setStatus("Thinking");
-
       const botBubble = addMsg("...", "bot");
 
       try {
