@@ -48,7 +48,11 @@
   }
 
   function onEscClose(e) {
-    if (e.key === "Escape" && chatbot && !chatbot.classList.contains("minimized")) {
+    if (
+      e.key === "Escape" &&
+      chatbot &&
+      !chatbot.classList.contains("minimized")
+    ) {
       closeChatbot();
     }
   }
