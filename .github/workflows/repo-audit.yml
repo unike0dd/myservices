@@ -1,0 +1,31 @@
+name: Repo Audit
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install audit tools
+        run: |
+          npm install -g htmlhint stylelint stylelint-config-standard prettier
+
+      - name: Lint HTML
+        run: htmlhint "**/*.html"
+
+      - name: Validate CSS
+        run: stylelint "assets/**/*.css"
+
+      - name: Formatting check
+        run: prettier --check "**/*.{html,css,js,yml,yaml}"
