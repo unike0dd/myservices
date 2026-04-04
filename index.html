@@ -1,1 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gabriel Services | Outsource, Delivered</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Libre+Baskerville:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container topbar">
+        <a class="brand serif" href="/">Gabriel Services</a>
+        <nav class="main-nav">
+          <a href="/about/">About</a><a href="/services/">Services</a
+          ><a href="/careers/">Careers</a><a href="/contact/">Contact</a
+          ><a href="/learning/">Learning</a>
+        </nav>
+      </div>
+    </header>
 
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow">Outsource, Delivered</p>
+        <h1>
+          Faster response, cleaner workflows, and reliable day-to-day execution.
+        </h1>
+        <p>
+          Gabriel Services supports logistics coordination, back-office workflow
+          management, customer operations, and IT support so your team can focus
+          on growth while day-to-day execution stays dependable.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="/contact/">Book a consultation</a>
+          <a class="btn ghost" href="/services/">See service coverage</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Operational support for modern businesses</h2>
+        <p class="muted">
+          We provide practical support that is transparent, responsive, and
+          aligned to your operating rhythm.
+        </p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h2>Service areas built for daily execution</h2>
+        <div class="grid four">
+          <article class="card">
+            <h3>Logistics Operations</h3>
+            <p>Dispatch and tracking continuity.</p>
+            <a href="/services/logistics-operations/">Explore service</a>
+          </article>
+          <article class="card">
+            <h3>Administrative Back Office</h3>
+            <p>Records, scheduling, and process upkeep.</p>
+            <a href="/services/administrative-backoffice/">Explore service</a>
+          </article>
+          <article class="card">
+            <h3>Customer Operations</h3>
+            <p>Communication, follow-up, and service rhythm.</p>
+            <a href="/services/customer-relations/">Explore service</a>
+          </article>
+          <article class="card">
+            <h3>IT Support</h3>
+            <p>Ticket triage and day-to-day request handling.</p>
+            <a href="/services/it-support/">Explore service</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Why businesses work with Gabriel Services</h2>
+        <p class="muted">
+          Consistency, transparent communication, practical execution, and a
+          professional-friendly team that feels like a fresh start for your
+          operations.
+        </p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h2>Start with the support you need</h2>
+        <div class="cta-row">
+          <a class="btn primary" href="/contact/">Request consultation</a
+          ><a class="btn ghost" href="/services/">View engagement options</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container footer-grid">
+        <div>
+          <h4>Company</h4>
+          <a href="/">Home</a><a href="/about/">About</a
+          ><a href="/services/">Services</a><a href="/careers/">Careers</a>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <a href="/contact/">Contact</a><a href="/learning/">Learning</a
+          ><a href="/sitemap.xml">Sitemap</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="/legal/terms.html">T&C</a
+          ><a href="/legal/cookies.html">Cookies Consent</a
+          ><a href="/legal/privacy-gdpr.html">Privacy and GDPR</a>
+        </div>
+      </div>
+      <div class="container"><small>© 2026 Gabriel Services</small></div>
+    </footer>
+
+    <nav class="mobile-nav" aria-label="Mobile Navigation">
+      <div id="services-dropup" class="services-dropup">
+        <a href="/services/logistics-operations/">Logistics</a>
+        <a href="/services/administrative-backoffice/">Admin Back Office</a>
+        <a href="/services/customer-relations/">Customer Relations</a>
+        <a href="/services/it-support/">IT Support</a>
+      </div>
+      <div class="menu">
+        <a href="/">Home</a>
+        <button id="mobile-services-toggle" type="button">Services</button>
+        <a href="/careers/">Careers</a>
+        <a href="#chatbot-container">Chatbot</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </nav>
+
+    <div id="chatbot-container" role="dialog" aria-modal="true">
+      <div id="chatbot-header">
+        <span id="title" data-en="OPS AI Chatbot" data-es="Chatbot OPS AI"
+          >OPS AI Chatbot</span
+        >
+        <div>
+          <span id="langCtrl" class="ctrl">ES</span>&nbsp;|&nbsp;<span
+            id="themeCtrl"
+            class="ctrl"
+            >Dark</span
+          >
+        </div>
+      </div>
+      <div id="chat-log" aria-live="polite"></div>
+      <div id="chatbot-form-container">
+        <form id="chatbot-input-row" autocomplete="off">
+          <input
+            id="chatbot-input"
+            type="text"
+            placeholder="Type your message..."
+            required
+            maxlength="256"
+            data-en-ph="Type your message..."
+            data-es-ph="Escriba su mensaje..."
+          /><button id="chatbot-send" type="submit" disabled aria-label="Send">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+        <label class="human-check"
+          ><input type="checkbox" id="human-check" /><span
+            id="human-label"
+            data-en="I am human"
+            data-es="Soy humano"
+            >I am human</span
+          ></label
+        >
+      </div>
+    </div>
+    <script src="/assets/main.js"></script>
+  </body>
+</html>
