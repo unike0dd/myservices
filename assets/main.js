@@ -42,6 +42,9 @@
   const input = qs("#chatbot-input");
   const send = qs("#chatbot-send");
   const guard = qs("#human-check");
+  const chatbot = qs("#chatbot-container");
+  const chatEndpoint =
+    chatbot?.dataset.chatEndpoint || "/api/chat";
   if (guard && send)
     guard.onchange = () => {
       send.disabled = !guard.checked;
@@ -54,6 +57,33 @@
     div.textContent = txt;
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
+    return div;
+  }
+
+  function setBusy(isBusy) {
+    if (!send || !input) return;
+    send.disabled = isBusy || (guard ? !guard.checked : false);
+    send.setAttribute("aria-busy", isBusy ? "true" : "false");
+    input.disabled = isBusy;
+  }
+
+  async function streamReply(response, target) {
+    if (!response.body || !target) return false;
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let chunkCount = 0;
+    let acc = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      chunkCount += 1;
+      acc += decoder.decode(value, { stream: true });
+      target.textContent = acc.trim() || "…";
+      if (log) log.scrollTop = log.scrollHeight;
+    }
+    acc += decoder.decode();
+    if (acc.trim()) target.textContent = acc.trim();
+    return chunkCount > 0;
   }
 
   if (form && input && send) {
@@ -64,23 +94,27 @@
       if (!msg) return;
       addMsg(msg, "user");
       input.value = "";
-      send.disabled = true;
-      addMsg("…", "bot");
+      setBusy(true);
+      const botMessage = addMsg("…", "bot");
       try {
-        const r = await fetch(
-          "https://your-cloudflare-worker.example.com/chat",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: msg }),
-          },
-        );
-        const d = await r.json();
-        log.lastChild.textContent = d.reply || "No reply.";
+        const r = await fetch(chatEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg, stream: true }),
+        });
+        if (!r.ok) {
+          throw new Error("HTTP " + r.status);
+        }
+
+        const streamed = await streamReply(r, botMessage);
+        if (!streamed) {
+          const d = await r.json();
+          botMessage.textContent = d.reply || "No reply.";
+        }
       } catch (err) {
-        log.lastChild.textContent = "Error: Can’t reach AI.";
+        if (botMessage) botMessage.textContent = "Error: Can’t reach AI.";
       }
-      send.disabled = false;
+      setBusy(false);
     };
   }
 })();
