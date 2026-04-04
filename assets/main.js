@@ -30,20 +30,34 @@
   const OPS_ASSET_ID = ORIGIN_ASSET_MAP[CURRENT_ORIGIN] || "";
 
   function openChatbot() {
-    if (!chatbot || !backdrop || !launcher) return;
+    if (!chatbot) return;
     chatbot.classList.remove("minimized");
-    backdrop.classList.remove("hidden");
-    launcher.classList.remove("visible");
-    launcher.setAttribute("aria-expanded", "true");
+    if (backdrop) backdrop.classList.remove("hidden");
+    if (launcher) {
+      launcher.classList.remove("visible");
+      launcher.setAttribute("aria-expanded", "true");
+    }
     if (input && !input.disabled) input.focus();
   }
 
   function closeChatbot() {
-    if (!chatbot || !backdrop || !launcher) return;
+    if (!chatbot) return;
     chatbot.classList.add("minimized");
-    backdrop.classList.add("hidden");
-    launcher.classList.add("visible");
-    launcher.setAttribute("aria-expanded", "false");
+    if (backdrop) backdrop.classList.add("hidden");
+    if (launcher) {
+      launcher.classList.add("visible");
+      launcher.setAttribute("aria-expanded", "false");
+    }
+  }
+
+  function minimizeChatbot() {
+    if (!chatbot) return;
+    chatbot.classList.add("minimized");
+    if (backdrop) backdrop.classList.add("hidden");
+    if (launcher) {
+      launcher.classList.add("visible");
+      launcher.setAttribute("aria-expanded", "false");
+    }
   }
 
   function onEscClose(e) {
@@ -175,7 +189,7 @@
   }
   if (closeBtn) closeBtn.addEventListener("click", closeChatbot);
   if (closeFooterBtn) closeFooterBtn.addEventListener("click", closeChatbot);
-  if (minimizeBtn) minimizeBtn.addEventListener("click", closeChatbot);
+  if (minimizeBtn) minimizeBtn.addEventListener("click", minimizeChatbot);
   if (backdrop) backdrop.addEventListener("click", closeChatbot);
   document.addEventListener("keydown", onEscClose);
 })();
