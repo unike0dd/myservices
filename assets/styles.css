@@ -249,11 +249,12 @@ textarea {
   --clr-border: #ff3bdb;
 
   position: fixed;
-  right: 0;
-  bottom: 0;
-  width: min(100%, 420px);
-  height: 100vh;
+  right: 5vw;
+  bottom: 5vh;
+  width: min(90vw, 420px);
+  height: 90vh;
   min-height: 420px;
+  max-height: 90vh;
   background: var(--clr-shell);
   border: 0;
   border-radius: 0;
@@ -458,10 +459,12 @@ textarea {
     display: block;
   }
   #chatbot-container {
-    right: 0;
+    right: 5vw;
     left: auto;
-    bottom: 0;
-    width: 100%;
+    bottom: 5vh;
+    width: 90vw;
+    height: 90vh;
+    max-height: 90vh;
   }
   #chatbot-launcher {
     bottom: 88px;
@@ -484,6 +487,11 @@ textarea {
     grid-template-columns: 1fr;
   }
   #chatbot-container {
-    min-height: 100vh;
+    right: 5vw;
+    bottom: 5vh;
+    width: 90vw;
+    height: 90vh;
+    min-height: 90vh;
+    max-height: 90vh;
   }
 }
