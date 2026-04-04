@@ -110,7 +110,8 @@
         node.textContent = lang === "es" ? node.dataset.es : node.dataset.en;
       });
       phNodes.forEach((node) => {
-        node.placeholder = lang === "es" ? node.dataset.esPh : node.dataset.enPh;
+        node.placeholder =
+          lang === "es" ? node.dataset.esPh : node.dataset.enPh;
       });
       ui.lang = lang;
       saveUiState(ui);
@@ -166,7 +167,10 @@
     backdrop.addEventListener("click", closeChatbot);
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !overlay.classList.contains("chatbot-hidden")) {
+      if (
+        event.key === "Escape" &&
+        !overlay.classList.contains("chatbot-hidden")
+      ) {
         closeChatbot();
       }
     });
@@ -207,11 +211,14 @@
         addMsg("…", "bot");
 
         try {
-          const r = await fetch("https://your-cloudflare-worker.example.com/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: msg }),
-          });
+          const r = await fetch(
+            "https://your-cloudflare-worker.example.com/chat",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: msg }),
+            },
+          );
           const d = await r.json();
           const reply = d.reply || "No reply.";
           log.lastChild.textContent = reply;
