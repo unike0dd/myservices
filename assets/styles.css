@@ -216,9 +216,10 @@ textarea {
   --clr-log: #1b0e2d;
   --clr-bar: #220f3a;
   --clr-bot: #321b53;
-  --clr-text: #ffffff;
-  --clr-user-text: #000000;
+  --clr-text: #fff;
+  --clr-user-text: #000;
   --clr-border: #ff3bdb;
+
   position: fixed;
   right: 0;
   bottom: 0;
@@ -230,7 +231,6 @@ textarea {
   border-radius: 0;
   box-shadow: none;
   display: flex;
-
   flex-direction: column;
   overflow: hidden;
   z-index: 60;
@@ -240,7 +240,11 @@ textarea {
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-accent) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--clr-primary) 0%,
+    var(--clr-accent) 100%
+  );
   color: #fff;
   font-weight: 700;
   font-size: 1rem;
@@ -292,16 +296,16 @@ textarea {
 #chatbot-input {
   flex: 1;
   min-width: 0;
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
-  color: #111111;
+  color: #111;
   font-size: 0.95rem;
   padding: 0.72rem 0.8rem;
   outline: none;
 }
 #chatbot-input::placeholder {
-  color: #666666;
+  color: #666;
   opacity: 1;
 }
 #chatbot-send {
@@ -311,7 +315,7 @@ textarea {
   min-width: 92px;
   border: none;
   background: var(--clr-accent);
-  color: #ffffff;
+  color: #fff;
   font-weight: 700;
   padding: 0.72rem 0.95rem;
   border-radius: 10px;
