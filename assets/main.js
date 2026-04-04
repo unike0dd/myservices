@@ -47,11 +47,11 @@
     const nav = document.createElement("nav");
     nav.className = "main-nav";
     nav.innerHTML = `
-      <a href="/about/">About</a>
-      <a href="/services/">Services</a>
-      <a href="/careers/">Careers</a>
-      <a href="/contact/">Contact</a>
-      <a href="/learning/">Learning</a>
+      <a href="/myservices/about/">About</a>
+      <a href="/myservices/services/">Services</a>
+      <a href="/myservices/careers/">Careers</a>
+      <a href="/myservices/contact/">Contact</a>
+      <a href="/myservices/learning/">Learning</a>
     `;
     topbar.appendChild(nav);
   }
