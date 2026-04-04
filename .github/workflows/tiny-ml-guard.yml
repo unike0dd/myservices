@@ -1,0 +1,32 @@
+name: Tiny ML Guard
+
+on:
+  pull_request:
+  push:
+    branches: ["main", "master"]
+
+jobs:
+  sanitize-scan-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Scan website and chatbot code integrity
+        run: |
+          python tools/tiny_ml_guard.py \
+            --root . \
+            --report tiny-ml-report.json \
+            --fail-threshold 3
+
+      - name: Upload scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tiny-ml-report
+          path: tiny-ml-report.json
