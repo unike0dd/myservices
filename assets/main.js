@@ -6,49 +6,26 @@
   }
 
   const qs = (s) => document.querySelector(s);
-  const qsa = (s) => [...document.querySelectorAll(s)];
-  const langCtrl = qs("#langCtrl");
-  const transNodes = qsa("[data-en]");
-  const phNodes = qsa("[data-en-ph]");
-  const humanLab = qs("#human-label");
-
-  if (langCtrl) {
-    langCtrl.onclick = () => {
-      const toES = langCtrl.textContent === "ES";
-      document.documentElement.lang = toES ? "es" : "en";
-      langCtrl.textContent = toES ? "EN" : "ES";
-      transNodes.forEach((node) => {
-        node.textContent = toES ? node.dataset.es : node.dataset.en;
-      });
-      phNodes.forEach((node) => {
-        node.placeholder = toES ? node.dataset.esPh : node.dataset.enPh;
-      });
-      if (humanLab)
-        humanLab.textContent = toES ? humanLab.dataset.es : humanLab.dataset.en;
-    };
-  }
-
-  const themeCtrl = qs("#themeCtrl");
-  if (themeCtrl) {
-    themeCtrl.onclick = () => {
-      const dark = themeCtrl.textContent === "Dark";
-      document.body.classList.toggle("dark", dark);
-      themeCtrl.textContent = dark ? "Light" : "Dark";
-    };
-  }
-
   const log = qs("#chat-log");
   const form = qs("#chatbot-input-row");
   const input = qs("#chatbot-input");
   const send = qs("#chatbot-send");
-  const guard = qs("#human-check");
-  const chatbot = qs("#chatbot-container");
-  const chatEndpoint =
-    chatbot?.dataset.chatEndpoint || "/api/chat";
-  if (guard && send)
-    guard.onchange = () => {
-      send.disabled = !guard.checked;
-    };
+  const statusNode = qs("#chatbot-status");
+  const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
+  const WORKER_CHAT = WORKER_BASE + "/api/chat";
+  const WORKER_MODE = "iframe_service_qa";
+  const ORIGIN_ASSET_MAP = {
+    "https://www.gabo.services":
+      "b91f605b23748de5cf02db0de2dd59117b31c709986a3c72837d0af8756473cf2779c206fc6ef80a57fdeddefa4ea11b972572f3a8edd9ed77900f9385e94bd6",
+    "https://gabo.services":
+      "8cdeef86bd180277d5b080d571ad8e6dbad9595f408b58475faaa3161f07448fbf12799ee199e3ee257405b75de555055fd5f43e0ce75e0740c4dc11bf86d132",
+  };
+  const CURRENT_ORIGIN = window.location.origin;
+  const OPS_ASSET_ID = ORIGIN_ASSET_MAP[CURRENT_ORIGIN] || "";
+
+  function setStatus(text) {
+    if (statusNode) statusNode.textContent = text;
+  }
 
   function addMsg(txt, cls) {
     if (!log) return;
@@ -60,61 +37,102 @@
     return div;
   }
 
-  function setBusy(isBusy) {
-    if (!send || !input) return;
-    send.disabled = isBusy || (guard ? !guard.checked : false);
-    send.setAttribute("aria-busy", isBusy ? "true" : "false");
-    input.disabled = isBusy;
+  function parseSSEBlock(block) {
+    const lines = String(block || "").split("\n");
+    let out = "";
+    for (const line of lines) {
+      if (line.startsWith("data:")) out += line.slice(5) + "\n";
+    }
+    return out;
   }
 
-  async function streamReply(response, target) {
-    if (!response.body || !target) return false;
-    const reader = response.body.getReader();
+  function canTalkToWorker() {
+    return !!OPS_ASSET_ID;
+  }
+
+  async function streamWorkerReply(message, bubble) {
+    const resp = await fetch(WORKER_CHAT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
+        "x-gabo-parent-origin": CURRENT_ORIGIN,
+        "x-ops-asset-id": OPS_ASSET_ID,
+      },
+      body: JSON.stringify({
+        mode: WORKER_MODE,
+        messages: [{ role: "user", content: message }],
+        meta: {},
+      }),
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => "");
+      throw new Error(
+        "Worker " + resp.status + (text ? " - " + text.slice(0, 240) : ""),
+      );
+    }
+
+    if (!resp.body) throw new Error("Empty response body");
+
+    const reader = resp.body.getReader();
     const decoder = new TextDecoder();
-    let chunkCount = 0;
-    let acc = "";
+    let buffer = "";
+    let wroteContent = false;
+
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
-      chunkCount += 1;
-      acc += decoder.decode(value, { stream: true });
-      target.textContent = acc.trim() || "…";
-      if (log) log.scrollTop = log.scrollHeight;
+
+      buffer += decoder.decode(value, { stream: true });
+      if (!buffer.includes("\n\n")) continue;
+
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop() || "";
+
+      for (const part of parts) {
+        const delta = parseSSEBlock(part);
+        if (!delta) continue;
+        if (!wroteContent) {
+          bubble.textContent = "";
+          wroteContent = true;
+        }
+        bubble.textContent += delta;
+        log.scrollTop = log.scrollHeight;
+      }
     }
-    acc += decoder.decode();
-    if (acc.trim()) target.textContent = acc.trim();
-    return chunkCount > 0;
+
+    if (!wroteContent && !bubble.textContent.trim()) bubble.textContent = "No reply.";
+  }
+
+  if (!canTalkToWorker()) {
+    setStatus("Unavailable");
+    if (send) send.disabled = true;
+    if (input) input.disabled = true;
   }
 
   if (form && input && send) {
-    form.onsubmit = async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (guard && !guard.checked) return;
+
       const msg = input.value.trim();
-      if (!msg) return;
+      if (!msg || !canTalkToWorker()) return;
       addMsg(msg, "user");
       input.value = "";
-      setBusy(true);
-      const botMessage = addMsg("…", "bot");
-      try {
-        const r = await fetch(chatEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg, stream: true }),
-        });
-        if (!r.ok) {
-          throw new Error("HTTP " + r.status);
-        }
+      input.focus();
+      send.disabled = true;
+      setStatus("Thinking");
+      const botBubble = addMsg("...", "bot");
 
-        const streamed = await streamReply(r, botMessage);
-        if (!streamed) {
-          const d = await r.json();
-          botMessage.textContent = d.reply || "No reply.";
-        }
-      } catch (err) {
-        if (botMessage) botMessage.textContent = "Error: Can’t reach AI.";
+      try {
+        await streamWorkerReply(msg, botBubble);
+        setStatus("Ready");
+      } catch (_err) {
+        botBubble.remove();
+        setStatus("Error");
+      } finally {
+        send.disabled = false;
       }
-      setBusy(false);
-    };
+    });
   }
 })();
