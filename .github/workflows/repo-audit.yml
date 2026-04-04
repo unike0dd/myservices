@@ -22,7 +22,7 @@ jobs:
 
       - name: Install audit tools
         run: |
-          npm install -g htmlhint stylelint stylelint-config-standard prettier
+          npm install -g htmlhint stylelint stylelint-config-standard prettier@3.7.4
 
       - name: Lint HTML
         run: htmlhint "**/*.html"
