@@ -77,6 +77,8 @@
   const form = qs("#chatbot-input-row");
   const input = qs("#chatbot-input");
   const send = qs("#chatbot-send");
+  const headerControls = qs("#chatbot-header-controls");
+  let statusNode = qs("#chatbot-status");
   const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
   const WORKER_CHAT = WORKER_BASE + "/api/chat";
   const WORKER_MODE = "iframe_service_qa";
@@ -87,7 +89,27 @@
       "8cdeef86bd180277d5b080d571ad8e6dbad9595f408b58475faaa3161f07448fbf12799ee199e3ee257405b75de555055fd5f43e0ce75e0740c4dc11bf86d132",
   };
   const CURRENT_ORIGIN = window.location.origin;
-  const OPS_ASSET_ID = ORIGIN_ASSET_MAP[CURRENT_ORIGIN] || "";
+  const QUERY_ASSET_ID = new URLSearchParams(window.location.search).get(
+    "ops_asset_id",
+  );
+  const META_ASSET_ID =
+    document
+      .querySelector('meta[name="ops-asset-id"]')
+      ?.getAttribute("content")
+      ?.trim() || "";
+  const STORED_ASSET_ID = localStorage.getItem("ops-asset-id") || "";
+  const OPS_ASSET_ID =
+    QUERY_ASSET_ID ||
+    META_ASSET_ID ||
+    STORED_ASSET_ID ||
+    ORIGIN_ASSET_MAP[CURRENT_ORIGIN] ||
+    "";
+
+  if (!statusNode && headerControls) {
+    statusNode = document.createElement("span");
+    statusNode.id = "chatbot-status";
+    headerControls.prepend(statusNode);
+  }
 
   function openChatbot() {
     if (!chatbot) return;
@@ -146,11 +168,30 @@
 
   function parseSSEBlock(block) {
     const lines = String(block || "").split("\n");
-    let out = "";
+    const chunks = [];
     for (const line of lines) {
-      if (line.startsWith("data:")) out += line.slice(5) + "\n";
+      if (!line.startsWith("data:")) continue;
+      const data = line.slice(5).replace(/^\s/, "");
+      if (data) chunks.push(data);
     }
-    return out;
+    return chunks.join("\n");
+  }
+
+  function extractDelta(rawData) {
+    if (!rawData) return "";
+    if (rawData === "[DONE]") return "";
+    try {
+      const parsed = JSON.parse(rawData);
+      return (
+        parsed?.delta ||
+        parsed?.content ||
+        parsed?.message?.content ||
+        parsed?.choices?.[0]?.delta?.content ||
+        ""
+      );
+    } catch (_err) {
+      return rawData;
+    }
   }
 
   function canTalkToWorker() {
@@ -198,7 +239,7 @@
       buffer = parts.pop() || "";
 
       for (const part of parts) {
-        const delta = parseSSEBlock(part);
+        const delta = extractDelta(parseSSEBlock(part));
         if (!delta) continue;
         if (!wroteContent) {
           bubble.textContent = "";
@@ -216,6 +257,15 @@
   if (!canTalkToWorker()) {
     if (send) send.disabled = true;
     if (input) input.disabled = true;
+    setStatus("Offline");
+    if (log && !log.childElementCount) {
+      addMsg(
+        "Chat is unavailable on this origin. Add ?ops_asset_id=... to test locally.",
+        "bot",
+      );
+    }
+  } else {
+    setStatus("Online");
   }
 
   if (form && input && send) {
@@ -228,14 +278,18 @@
       input.value = "";
       input.focus();
       send.disabled = true;
+      setStatus("Thinking…");
       const botBubble = addMsg("...", "bot");
 
       try {
         await streamWorkerReply(msg, botBubble);
       } catch (_err) {
-        botBubble.remove();
+        botBubble.textContent =
+          "Sorry — I couldn't reach support right now. Please try again.";
+        setStatus("Error");
       } finally {
         send.disabled = false;
+        if (canTalkToWorker()) setStatus("Online");
       }
     });
   }
