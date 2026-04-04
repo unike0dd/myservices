@@ -9,7 +9,7 @@
   const chatbot = qs("#chatbot-container");
   const backdrop = qs("#chatbot-backdrop");
   const launcher = qs("#chatbot-launcher");
-  const openLink = qs("#open-chatbot-link");
+  const openLinks = document.querySelectorAll('a[href="#chatbot-container"]');
   const closeBtn = qs("#chatbot-close");
   const closeFooterBtn = qs("#chatbot-close-footer");
   const minimizeBtn = qs("#chatbot-minimize");
@@ -181,10 +181,12 @@
   }
 
   if (launcher) launcher.addEventListener("click", openChatbot);
-  if (openLink) {
-    openLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      openChatbot();
+  if (openLinks.length) {
+    openLinks.forEach((openLink) => {
+      openLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        openChatbot();
+      });
     });
   }
   if (closeBtn) closeBtn.addEventListener("click", closeChatbot);
