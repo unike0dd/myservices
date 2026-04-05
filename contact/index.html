@@ -24,13 +24,78 @@
             <div><label>State/Province</label><input /></div>
             <div><label>Space/Suite/Apt</label><input /></div>
             <div><label>Country Zip Code</label><input /></div>
-            <div><label>Best Time to Contact You</label><input /></div>
+            <div class="entry-group best-contact-time">
+              <label>Best Time to Contact You</label>
+              <div class="best-contact-row">
+                <input type="date" aria-label="Best contact date" />
+                <input type="time" aria-label="Best contact time" />
+              </div>
+            </div>
           </div>
           <label>Message</label><textarea></textarea>
           <h3>Inquiry About Remote Assistant</h3>
-          <p>
-            Skills / Area of Interest / Experience Level / Education / Languages
-          </p>
+          <div class="form-grid inquiry-grid">
+            <div class="entry-group" data-repeatable-group data-field-name="Skills">
+              <div class="entry-group-header">
+                <label>Skills</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add skill entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Area of Interest">
+              <div class="entry-group-header">
+                <label>Area of Interest</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add area of interest entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Experience Level">
+              <div class="entry-group-header">
+                <label>Experience Level</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add experience level entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Education">
+              <div class="entry-group-header">
+                <label>Education</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add education entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Languages">
+              <div class="entry-group-header">
+                <label>Languages</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add language entry" /></div>
+              </div>
+            </div>
+          </div>
           <div class="form-actions">
             <button class="btn primary" type="submit">Submit</button
             ><button class="btn ghost" type="reset">Clear Form</button>

@@ -76,6 +76,52 @@
   ensureChatbotShell();
   ensureSkipLink();
 
+  function initRepeatableEntryGroups() {
+    const groups = document.querySelectorAll("[data-repeatable-group]");
+    if (!groups.length) return;
+
+    groups.forEach((group) => {
+      const list = group.querySelector("[data-repeat-list]");
+      const addBtn = group.querySelector("[data-repeat-add]");
+      const removeBtn = group.querySelector("[data-repeat-remove]");
+      const fieldName =
+        group.getAttribute("data-field-name") || "additional entry";
+
+      if (!list || !addBtn || !removeBtn) return;
+
+      const firstInput = list.querySelector("input");
+      const placeholder =
+        firstInput?.getAttribute("placeholder") ||
+        "Add " + fieldName.toLowerCase() + " entry";
+
+      addBtn.addEventListener("click", () => {
+        const row = document.createElement("div");
+        row.className = "entry-row";
+        const input = document.createElement("input");
+        input.setAttribute("placeholder", placeholder);
+        input.setAttribute("aria-label", fieldName + " entry");
+        row.appendChild(input);
+        list.appendChild(row);
+        input.focus();
+      });
+
+      removeBtn.addEventListener("click", () => {
+        const rows = list.querySelectorAll(".entry-row");
+        if (rows.length <= 1) {
+          const onlyInput = rows[0]?.querySelector("input");
+          if (onlyInput) {
+            onlyInput.value = "";
+            onlyInput.focus();
+          }
+          return;
+        }
+        rows[rows.length - 1].remove();
+      });
+    });
+  }
+
+  initRepeatableEntryGroups();
+
   const serviceBtn = document.getElementById("mobile-services-toggle");
   const dropup = document.getElementById("services-dropup");
   if (serviceBtn && dropup) {
