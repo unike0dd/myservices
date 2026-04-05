@@ -11,6 +11,7 @@
       <a href="/myservices/careers/">Careers</a>
       <a href="/myservices/contact/">Contact</a>
       <a href="/myservices/learning/">Learning</a>
+      <a href="#chatbot-container">Chatbot</a>
     `;
     topbar.appendChild(nav);
   }
