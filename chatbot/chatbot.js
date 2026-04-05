@@ -67,7 +67,6 @@
     const input = qs("#chatbot-input");
     const send = qs("#chatbot-send");
     const statusNode = ensureStatusNode(qs("#chatbot-header-controls"));
-
     const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
     const WORKER_CHAT = WORKER_BASE + "/api/chat";
     const WORKER_MODE = "iframe_service_qa";
