@@ -1,0 +1,14 @@
+name: Chatbot Guard Checks
+
+on:
+  workflow_dispatch:
+
+jobs:
+  chatbot-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run chatbot guard checks
+        run: ./scripts/chatbot-guard-checks.sh
