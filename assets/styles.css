@@ -271,8 +271,9 @@ textarea {
   max-height: 90vh;
   background: var(--clr-shell);
   border: 0;
-  border-radius: 0;
-  box-shadow: none;
+  border-radius: 20px;
+  box-shadow: 0 20px 46px rgba(6, 2, 20, 0.45);
+  border: 1px solid rgba(255, 59, 219, 0.35);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -296,6 +297,7 @@ textarea {
   font-weight: 700;
   font-size: 1rem;
   padding: 0.85rem 1rem;
+  border-radius: 20px 20px 0 0;
 }
 #chatbot-header-controls {
   display: flex;
@@ -312,7 +314,7 @@ textarea {
   min-width: 30px;
   height: 30px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   background: #fff3;
   color: #fff;
@@ -326,6 +328,7 @@ textarea {
   background: var(--clr-log);
   color: #eee;
   font-size: 0.94rem;
+  border-radius: 0;
 }
 .chat-msg {
   margin: 0.55rem 0;
@@ -345,17 +348,21 @@ textarea {
   margin-right: auto;
   background: var(--clr-bot);
   color: var(--clr-text);
-  border-radius: 14px 14px 14px 0;
+  border-radius: 14px 14px 14px 4px;
 }
 #chatbot-form-container {
   background: var(--clr-bar);
   border-top: 1px solid var(--clr-border);
   padding: 0.7rem;
+  border-radius: 0 0 20px 20px;
 }
 #chatbot-input-row {
   display: flex;
   gap: 0.6rem;
   margin: 0;
+  padding: 0.55rem;
+  border-radius: 12px;
+  background: #eceef3;
 }
 #chatbot-input {
   flex: 1;
@@ -382,7 +389,7 @@ textarea {
   color: #fff;
   font-weight: 700;
   padding: 0.72rem 0.95rem;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition:
     background 0.2s ease,
@@ -399,7 +406,7 @@ textarea {
   margin-top: 0.55rem;
   width: 100%;
   border: 1px solid #fff;
-  border-radius: 10px;
+  border-radius: 11px;
   background: transparent;
   color: #fff;
   font-weight: 700;
@@ -479,6 +486,7 @@ textarea {
     width: 90vw;
     height: 90vh;
     max-height: 90vh;
+    border-radius: 18px;
   }
   #chatbot-launcher {
     bottom: 88px;
@@ -507,6 +515,7 @@ textarea {
     height: 90vh;
     min-height: 90vh;
     max-height: 90vh;
+    border-radius: 18px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
