@@ -1,0 +1,212 @@
+/* chatbot */
+#chatbot-launcher {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #00c4ff 0%, #ff3bdb 100%);
+  color: #fff;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+  z-index: 61;
+}
+
+#chatbot-launcher:not(.visible) {
+  display: none;
+}
+
+#chatbot-container {
+  --clr-primary: #00c4ff;
+  --clr-accent: #ff3bdb;
+  --clr-accent-dark: #e000be;
+  --clr-shell: #251541;
+  --clr-log: #1b0e2d;
+  --clr-bar: #220f3a;
+  --clr-bot: #321b53;
+  --clr-text: #fff;
+  --clr-user-text: #000;
+  --clr-border: #ff3bdb;
+
+  position: fixed;
+  right: 5vw;
+  bottom: 5vh;
+  width: min(90vw, 420px);
+  height: 90vh;
+  min-height: 420px;
+  max-height: 90vh;
+  background: var(--clr-shell);
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 20px 46px rgba(6, 2, 20, 0.45);
+  border: 1px solid rgba(255, 59, 219, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 60;
+}
+
+#chatbot-container.minimized {
+  display: none;
+}
+#chatbot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(
+    135deg,
+    var(--clr-primary) 0%,
+    var(--clr-accent) 100%
+  );
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 20px 20px 0 0;
+}
+#chatbot-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+#chatbot-status {
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0.95;
+}
+#chatbot-minimize,
+#chatbot-close {
+  min-width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fff3;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1;
+}
+#chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--clr-log);
+  color: #eee;
+  font-size: 0.94rem;
+  border-radius: 0;
+}
+.chat-msg {
+  margin: 0.55rem 0;
+  max-width: 90%;
+  padding: 0.6rem 0.75rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.chat-msg.user {
+  margin-left: auto;
+  background: var(--clr-primary);
+  color: var(--clr-user-text);
+  border-radius: 14px 14px 0 14px;
+}
+.chat-msg.bot {
+  margin-right: auto;
+  background: var(--clr-bot);
+  color: var(--clr-text);
+  border-radius: 14px 14px 14px 4px;
+}
+#chatbot-form-container {
+  background: var(--clr-bar);
+  border-top: 1px solid var(--clr-border);
+  padding: 0.7rem;
+  border-radius: 0 0 20px 20px;
+}
+#chatbot-input-row {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.55rem;
+  border-radius: 12px;
+  background: #eceef3;
+}
+#chatbot-input {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  color: #111;
+  font-size: 0.95rem;
+  padding: 0.72rem 0.8rem;
+  outline: none;
+}
+#chatbot-input::placeholder {
+  color: #666;
+  opacity: 1;
+}
+#chatbot-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  border: none;
+  background: var(--clr-accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.72rem 0.95rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+#chatbot-send:hover {
+  background: var(--clr-accent-dark);
+}
+#chatbot-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+#chatbot-close-footer {
+  margin-top: 0.55rem;
+  width: 100%;
+  border: 1px solid #fff;
+  border-radius: 11px;
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  #chatbot-container {
+    right: 5vw;
+    left: auto;
+    bottom: 5vh;
+    width: 90vw;
+    height: 90vh;
+    max-height: 90vh;
+    border-radius: 18px;
+  }
+  #chatbot-launcher {
+    bottom: 88px;
+  }
+}
+
+@media (max-width: 640px) {
+  #chatbot-container {
+    right: 5vw;
+    bottom: 5vh;
+    width: 90vw;
+    height: 90vh;
+    min-height: 90vh;
+    max-height: 90vh;
+    border-radius: 18px;
+  }
+}
