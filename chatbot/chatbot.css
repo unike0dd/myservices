@@ -68,9 +68,6 @@
   font-size: 1rem;
   padding: 0.85rem 1rem;
   border-radius: 20px 20px 0 0;
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
 }
 #chatbot-header-controls {
   display: flex;

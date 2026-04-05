@@ -62,13 +62,11 @@
     const closeBtn = qs("#chatbot-close");
     const closeFooterBtn = qs("#chatbot-close-footer");
     const minimizeBtn = qs("#chatbot-minimize");
-    const header = qs("#chatbot-header");
     const log = qs("#chat-log");
     const form = qs("#chatbot-input-row");
     const input = qs("#chatbot-input");
     const send = qs("#chatbot-send");
     const statusNode = ensureStatusNode(qs("#chatbot-header-controls"));
-
     const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
     const WORKER_CHAT = WORKER_BASE + "/api/chat";
     const WORKER_MODE = "iframe_service_qa";
@@ -116,83 +114,6 @@
         launcher.classList.add("visible");
         launcher.setAttribute("aria-expanded", "false");
       }
-    }
-
-    const dragState = {
-      active: false,
-      pointerId: null,
-      offsetX: 0,
-      offsetY: 0,
-    };
-
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
-
-    function clampChatbotToViewport() {
-      if (!chatbot || chatbot.classList.contains("minimized")) return;
-      if (!chatbot.style.left || !chatbot.style.top) return;
-
-      const rect = chatbot.getBoundingClientRect();
-      const maxLeft = Math.max(0, window.innerWidth - rect.width);
-      const maxTop = Math.max(0, window.innerHeight - rect.height);
-      chatbot.style.left = clamp(rect.left, 0, maxLeft) + "px";
-      chatbot.style.top = clamp(rect.top, 0, maxTop) + "px";
-    }
-
-    function onDragMove(event) {
-      if (!dragState.active || !chatbot) return;
-      const rect = chatbot.getBoundingClientRect();
-      const maxLeft = Math.max(0, window.innerWidth - rect.width);
-      const maxTop = Math.max(0, window.innerHeight - rect.height);
-
-      const nextLeft = clamp(event.clientX - dragState.offsetX, 0, maxLeft);
-      const nextTop = clamp(event.clientY - dragState.offsetY, 0, maxTop);
-      chatbot.style.left = nextLeft + "px";
-      chatbot.style.top = nextTop + "px";
-      chatbot.style.right = "auto";
-      chatbot.style.bottom = "auto";
-    }
-
-    function stopDragging() {
-      if (!dragState.active) return;
-      if (header && header.releasePointerCapture && dragState.pointerId !== null) {
-        try {
-          header.releasePointerCapture(dragState.pointerId);
-        } catch (_err) {
-          // no-op
-        }
-      }
-      dragState.active = false;
-      dragState.pointerId = null;
-      if (header) header.style.cursor = "grab";
-    }
-
-    function startDragging(event) {
-      if (!chatbot || !header) return;
-      if (chatbot.classList.contains("minimized")) return;
-      const target = event.target;
-      if (target instanceof Element && target.closest("button")) return;
-
-      const rect = chatbot.getBoundingClientRect();
-      dragState.active = true;
-      dragState.pointerId = event.pointerId;
-      dragState.offsetX = event.clientX - rect.left;
-      dragState.offsetY = event.clientY - rect.top;
-      header.style.cursor = "grabbing";
-      if (header.setPointerCapture) {
-        try {
-          header.setPointerCapture(event.pointerId);
-        } catch (_err) {
-          // no-op
-        }
-      }
-
-      chatbot.style.left = rect.left + "px";
-      chatbot.style.top = rect.top + "px";
-      chatbot.style.right = "auto";
-      chatbot.style.bottom = "auto";
-      event.preventDefault();
     }
 
     function onEscClose(e) {
@@ -356,24 +277,6 @@
     if (closeBtn) closeBtn.addEventListener("click", closeChatbot);
     if (closeFooterBtn) closeFooterBtn.addEventListener("click", closeChatbot);
     if (minimizeBtn) minimizeBtn.addEventListener("click", closeChatbot);
-    if (header) {
-      header.addEventListener("pointerdown", startDragging);
-      header.addEventListener("pointermove", (event) => {
-        if (dragState.active && event.pointerId === dragState.pointerId) {
-          onDragMove(event);
-        }
-      });
-      header.addEventListener("pointerup", stopDragging);
-      header.addEventListener("pointercancel", stopDragging);
-      header.addEventListener("lostpointercapture", stopDragging);
-    }
-    window.addEventListener("pointermove", (event) => {
-      if (dragState.active && event.pointerId === dragState.pointerId) {
-        onDragMove(event);
-      }
-    });
-    window.addEventListener("pointerup", stopDragging);
-    window.addEventListener("resize", clampChatbotToViewport);
     document.addEventListener("keydown", onEscClose);
     document.addEventListener("click", (event) => {
       if (!chatbot || chatbot.classList.contains("minimized")) return;
