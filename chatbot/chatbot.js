@@ -4,7 +4,7 @@
 
   const CHATBOT_SHELL_URL = "/myservices/chatbot/chatbot.html";
   const CHATBOT_FALLBACK_SHELL = `
-<div id="chatbot-container" class="minimized" role="dialog" aria-label="Gabo chatbot">
+<div id="chatbot-container" role="dialog" aria-label="Gabo chatbot">
   <div id="chatbot-header">
     <span>Gabo</span>
     <div id="chatbot-header-controls">
@@ -20,8 +20,7 @@
     </form>
     <button id="chatbot-close-footer" type="button">Close</button>
   </div>
-</div>
-<button id="chatbot-launcher" class="visible" type="button" aria-label="Open chatbot" aria-expanded="false">💬</button>`;
+</div>`;
 
   function qs(selector) {
     return document.querySelector(selector);
@@ -38,7 +37,7 @@
   }
 
   function ensureChatbotShell() {
-    if (document.getElementById("chatbot-launcher")) {
+    if (document.getElementById("chatbot-container")) {
       return Promise.resolve();
     }
 
@@ -57,7 +56,6 @@
 
   function initChatbot() {
     const chatbot = qs("#chatbot-container");
-    const launcher = qs("#chatbot-launcher");
     const openLinks = document.querySelectorAll('a[href="#chatbot-container"]');
     const closeBtn = qs("#chatbot-close");
     const closeFooterBtn = qs("#chatbot-close-footer");
@@ -92,28 +90,57 @@
       STORED_ASSET_ID ||
       ORIGIN_ASSET_MAP[CURRENT_ORIGIN] ||
       "";
+    const TELEMETRY_CHANNEL = "chatbot-telemetry";
+    const RATE_LIMIT_WINDOW_MS = 60_000;
+    const RATE_LIMIT_MAX_MESSAGES = 8;
+    const sentMessageTimestamps = [];
 
     function setStatus(text) {
       if (statusNode) statusNode.textContent = text;
     }
 
+    function emitTelemetry(eventType, payload) {
+      window.dispatchEvent(
+        new CustomEvent(TELEMETRY_CHANNEL, {
+          detail: {
+            eventType,
+            payload,
+            ts: new Date().toISOString(),
+          },
+        }),
+      );
+    }
+
+    function isRateLimited() {
+      const now = Date.now();
+      while (
+        sentMessageTimestamps.length &&
+        now - sentMessageTimestamps[0] > RATE_LIMIT_WINDOW_MS
+      ) {
+        sentMessageTimestamps.shift();
+      }
+      if (sentMessageTimestamps.length >= RATE_LIMIT_MAX_MESSAGES) {
+        return true;
+      }
+      sentMessageTimestamps.push(now);
+      return false;
+    }
+
+    function sanitizeBotOutput(text) {
+      return String(text || "")
+        .replace(/\u0000/g, "")
+        .replace(/[\u2028\u2029]/g, " ");
+    }
+
     function openChatbot() {
       if (!chatbot) return;
       chatbot.classList.remove("minimized");
-      if (launcher) {
-        launcher.classList.remove("visible");
-        launcher.setAttribute("aria-expanded", "true");
-      }
       if (input && !input.disabled) input.focus();
     }
 
     function closeChatbot() {
       if (!chatbot) return;
       chatbot.classList.add("minimized");
-      if (launcher) {
-        launcher.classList.add("visible");
-        launcher.setAttribute("aria-expanded", "false");
-      }
     }
 
     function onEscClose(e) {
@@ -214,7 +241,7 @@
             bubble.textContent = "";
             wroteContent = true;
           }
-          bubble.textContent += delta;
+          bubble.textContent += sanitizeBotOutput(delta);
           log.scrollTop = log.scrollHeight;
         }
       }
@@ -244,7 +271,14 @@
 
         const msg = input.value.trim();
         if (!msg || !canTalkToWorker()) return;
+        if (isRateLimited()) {
+          setStatus("Rate limited");
+          addMsg("You are sending messages too quickly. Please wait a minute.", "bot");
+          emitTelemetry("rate_limited", { windowMs: RATE_LIMIT_WINDOW_MS, max: RATE_LIMIT_MAX_MESSAGES });
+          return;
+        }
         addMsg(msg, "user");
+        emitTelemetry("message_sent", { length: msg.length });
         input.value = "";
         input.focus();
         send.disabled = true;
@@ -253,10 +287,12 @@
 
         try {
           await streamWorkerReply(msg, botBubble);
+          emitTelemetry("message_completed", { length: msg.length });
         } catch (_err) {
           botBubble.textContent =
             "Sorry — I couldn't reach support right now. Please try again.";
           setStatus("Error");
+          emitTelemetry("message_error", { length: msg.length });
         } finally {
           send.disabled = false;
           if (canTalkToWorker()) setStatus("Online");
@@ -264,7 +300,6 @@
       });
     }
 
-    if (launcher) launcher.addEventListener("click", openChatbot);
     if (openLinks.length) {
       openLinks.forEach((openLink) => {
         openLink.addEventListener("click", (e) => {
@@ -283,7 +318,6 @@
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (chatbot.contains(target)) return;
-      if (launcher && launcher.contains(target)) return;
       if (Array.from(openLinks).some((openLink) => openLink.contains(target))) {
         return;
       }
