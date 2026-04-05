@@ -21,7 +21,6 @@
     <button id="chatbot-close-footer" type="button">Close</button>
   </div>
 </div>
-<div id="chatbot-backdrop" class="hidden" aria-hidden="true"></div>
 <button id="chatbot-launcher" class="visible" type="button" aria-label="Open chatbot" aria-expanded="false">💬</button>`;
 
   function qs(selector) {
@@ -58,7 +57,6 @@
 
   function initChatbot() {
     const chatbot = qs("#chatbot-container");
-    const backdrop = qs("#chatbot-backdrop");
     const launcher = qs("#chatbot-launcher");
     const openLinks = document.querySelectorAll('a[href="#chatbot-container"]');
     const closeBtn = qs("#chatbot-close");
@@ -103,7 +101,6 @@
     function openChatbot() {
       if (!chatbot) return;
       chatbot.classList.remove("minimized");
-      if (backdrop) backdrop.classList.remove("hidden");
       if (launcher) {
         launcher.classList.remove("visible");
         launcher.setAttribute("aria-expanded", "true");
@@ -114,7 +111,6 @@
     function closeChatbot() {
       if (!chatbot) return;
       chatbot.classList.add("minimized");
-      if (backdrop) backdrop.classList.add("hidden");
       if (launcher) {
         launcher.classList.add("visible");
         launcher.setAttribute("aria-expanded", "false");
@@ -282,8 +278,18 @@
     if (closeBtn) closeBtn.addEventListener("click", closeChatbot);
     if (closeFooterBtn) closeFooterBtn.addEventListener("click", closeChatbot);
     if (minimizeBtn) minimizeBtn.addEventListener("click", closeChatbot);
-    if (backdrop) backdrop.addEventListener("click", closeChatbot);
     document.addEventListener("keydown", onEscClose);
+    document.addEventListener("click", (event) => {
+      if (!chatbot || chatbot.classList.contains("minimized")) return;
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (chatbot.contains(target)) return;
+      if (launcher && launcher.contains(target)) return;
+      if (Array.from(openLinks).some((openLink) => openLink.contains(target))) {
+        return;
+      }
+      closeChatbot();
+    });
   }
 
   ensureChatbotShell().then(initChatbot);

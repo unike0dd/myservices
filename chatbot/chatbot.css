@@ -1,11 +1,4 @@
 /* chatbot */
-#chatbot-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 59;
-}
-
 #chatbot-launcher {
   position: fixed;
   right: 1rem;
@@ -189,10 +182,6 @@
   font-weight: 700;
   padding: 0.6rem 0.8rem;
   cursor: pointer;
-}
-
-#chatbot-backdrop.hidden {
-  display: none;
 }
 
 @media (max-width: 900px) {
