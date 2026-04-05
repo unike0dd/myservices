@@ -152,14 +152,17 @@
 
     function ensureLauncher() {
       let launcherNode = qs("#chatbot-launcher");
-      if (launcherNode) return launcherNode;
-      launcherNode = document.createElement("button");
-      launcherNode.id = "chatbot-launcher";
-      launcherNode.type = "button";
+      if (!launcherNode) {
+        launcherNode = document.createElement("button");
+        launcherNode.id = "chatbot-launcher";
+        launcherNode.type = "button";
+        document.body.appendChild(launcherNode);
+      }
+
+      launcherNode.classList.add("visible");
       launcherNode.setAttribute("aria-label", "Open chatbot");
       launcherNode.setAttribute("aria-expanded", "false");
       launcherNode.innerHTML = '<i class="fas fa-message" aria-hidden="true"></i>';
-      document.body.appendChild(launcherNode);
       return launcherNode;
     }
 
