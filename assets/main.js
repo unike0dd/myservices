@@ -135,6 +135,17 @@
   }
 
   function loadChatbotAssets() {
+    if (!document.querySelector('link[data-fontawesome-chatbot="true"]')) {
+      const iconCss = document.createElement("link");
+      iconCss.rel = "stylesheet";
+      iconCss.href =
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css";
+      iconCss.crossOrigin = "anonymous";
+      iconCss.referrerPolicy = "no-referrer";
+      iconCss.setAttribute("data-fontawesome-chatbot", "true");
+      document.head.appendChild(iconCss);
+    }
+
     if (!document.querySelector('link[data-chatbot-css="true"]')) {
       const chatbotCss = document.createElement("link");
       chatbotCss.rel = "stylesheet";
