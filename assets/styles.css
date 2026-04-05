@@ -239,6 +239,7 @@ textarea {
   display: flex;
   gap: 0.35rem;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .entry-btn {
   padding: 0.3rem 0.6rem;
@@ -257,6 +258,9 @@ textarea {
 }
 .inquiry-grid {
   margin-top: 0.6rem;
+}
+.full-row {
+  grid-column: 1 / -1;
 }
 /* chatbot */
 #chatbot-backdrop {
