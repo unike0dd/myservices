@@ -19,7 +19,7 @@ body {
   background: #f8fafc;
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
   line-height: 1.6;
-  padding-bottom: 90px;
+  padding-bottom: 0;
 }
 .skip-link {
   position: absolute;
@@ -317,6 +317,9 @@ textarea {
   color: var(--brand-navy);
 }
 @media (max-width: 900px) {
+  body {
+    padding-bottom: 90px;
+  }
   .hero {
     min-height: auto;
   }
