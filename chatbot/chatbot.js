@@ -22,7 +22,7 @@
   </div>
 </div>
 <button id="chatbot-launcher" type="button" aria-label="Open chatbot" aria-expanded="false">
-  <span aria-hidden="true">💬</span>
+  <i class="fas fa-message" aria-hidden="true"></i>
 </button>`;
 
   function qs(selector) {
@@ -158,7 +158,7 @@
       launcherNode.type = "button";
       launcherNode.setAttribute("aria-label", "Open chatbot");
       launcherNode.setAttribute("aria-expanded", "false");
-      launcherNode.innerHTML = '<span aria-hidden="true">💬</span>';
+      launcherNode.innerHTML = '<i class="fas fa-message" aria-hidden="true"></i>';
       document.body.appendChild(launcherNode);
       return launcherNode;
     }
