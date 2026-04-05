@@ -20,7 +20,10 @@
     </form>
     <button id="chatbot-close-footer" type="button">Close</button>
   </div>
-</div>`;
+</div>
+<button id="chatbot-launcher" type="button" aria-label="Open chatbot" aria-expanded="false">
+  <span aria-hidden="true">💬</span>
+</button>`;
 
   function qs(selector) {
     return document.querySelector(selector);
@@ -56,7 +59,9 @@
 
   function initChatbot() {
     const chatbot = qs("#chatbot-container");
+    const header = qs("#chatbot-header");
     const openLinks = document.querySelectorAll('a[href="#chatbot-container"]');
+    const launcher = ensureLauncher();
     const closeBtn = qs("#chatbot-close");
     const closeFooterBtn = qs("#chatbot-close-footer");
     const minimizeBtn = qs("#chatbot-minimize");
@@ -135,13 +140,109 @@
     function openChatbot() {
       if (!chatbot) return;
       chatbot.classList.remove("minimized");
+      if (launcher) launcher.setAttribute("aria-expanded", "true");
       if (input && !input.disabled) input.focus();
     }
 
     function closeChatbot() {
       if (!chatbot) return;
       chatbot.classList.add("minimized");
+      if (launcher) launcher.setAttribute("aria-expanded", "false");
     }
+
+    function ensureLauncher() {
+      let launcherNode = qs("#chatbot-launcher");
+      if (launcherNode) return launcherNode;
+      launcherNode = document.createElement("button");
+      launcherNode.id = "chatbot-launcher";
+      launcherNode.type = "button";
+      launcherNode.setAttribute("aria-label", "Open chatbot");
+      launcherNode.setAttribute("aria-expanded", "false");
+      launcherNode.innerHTML = '<span aria-hidden="true">💬</span>';
+      document.body.appendChild(launcherNode);
+      return launcherNode;
+    }
+
+    function enableDrag() {
+      if (!chatbot || !header) return;
+      let dragging = false;
+      let pointerId = null;
+      let grabOffsetX = 0;
+      let grabOffsetY = 0;
+      let suppressOutsideCloseUntil = 0;
+
+      const onPointerMove = (e) => {
+        if (!dragging || e.pointerId !== pointerId) return;
+        const rect = chatbot.getBoundingClientRect();
+        const maxLeft = Math.max(0, window.innerWidth - rect.width);
+        const maxTop = Math.max(0, window.innerHeight - rect.height);
+        const nextLeft = Math.min(
+          maxLeft,
+          Math.max(0, e.clientX - grabOffsetX),
+        );
+        const nextTop = Math.min(maxTop, Math.max(0, e.clientY - grabOffsetY));
+
+        chatbot.style.left = nextLeft + "px";
+        chatbot.style.top = nextTop + "px";
+        chatbot.style.right = "auto";
+        chatbot.style.bottom = "auto";
+      };
+
+      const stopDrag = (e) => {
+        if (!dragging || e.pointerId !== pointerId) return;
+        dragging = false;
+        suppressOutsideCloseUntil = Date.now() + 120;
+        header.classList.remove("chatbot-header-dragging");
+        try {
+          header.releasePointerCapture(pointerId);
+        } catch (_err) {
+          // no-op
+        }
+        pointerId = null;
+      };
+
+      header.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        if (!chatbot || chatbot.classList.contains("minimized")) return;
+        if (e.target instanceof Element && e.target.closest("button")) return;
+        const rect = chatbot.getBoundingClientRect();
+        dragging = true;
+        pointerId = e.pointerId;
+        grabOffsetX = e.clientX - rect.left;
+        grabOffsetY = e.clientY - rect.top;
+        header.classList.add("chatbot-header-dragging");
+        header.setPointerCapture(pointerId);
+      });
+
+      header.addEventListener("pointermove", onPointerMove);
+      header.addEventListener("pointerup", stopDrag);
+      header.addEventListener("pointercancel", stopDrag);
+
+      window.addEventListener("resize", () => {
+        if (!chatbot || chatbot.classList.contains("minimized")) return;
+        const rect = chatbot.getBoundingClientRect();
+        let left = rect.left;
+        let top = rect.top;
+        const maxLeft = Math.max(0, window.innerWidth - rect.width);
+        const maxTop = Math.max(0, window.innerHeight - rect.height);
+        if (rect.right > window.innerWidth) left = maxLeft;
+        if (rect.bottom > window.innerHeight) top = maxTop;
+        if (rect.left < 0) left = 0;
+        if (rect.top < 0) top = 0;
+        if (left !== rect.left || top !== rect.top) {
+          chatbot.style.left = left + "px";
+          chatbot.style.top = top + "px";
+          chatbot.style.right = "auto";
+          chatbot.style.bottom = "auto";
+        }
+      });
+
+      return function shouldSuppressOutsideClose() {
+        return Date.now() < suppressOutsideCloseUntil;
+      };
+    }
+
+    const shouldSuppressOutsideClose = enableDrag() || (() => false);
 
     function onEscClose(e) {
       if (
@@ -308,6 +409,16 @@
         });
       });
     }
+    if (launcher) {
+      launcher.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (chatbot && chatbot.classList.contains("minimized")) {
+          openChatbot();
+          return;
+        }
+        closeChatbot();
+      });
+    }
 
     if (closeBtn) closeBtn.addEventListener("click", closeChatbot);
     if (closeFooterBtn) closeFooterBtn.addEventListener("click", closeChatbot);
@@ -315,6 +426,7 @@
     document.addEventListener("keydown", onEscClose);
     document.addEventListener("click", (event) => {
       if (!chatbot || chatbot.classList.contains("minimized")) return;
+      if (shouldSuppressOutsideClose()) return;
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (chatbot.contains(target)) return;
