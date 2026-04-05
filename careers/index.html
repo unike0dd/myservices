@@ -46,12 +46,67 @@
                 <option>IT Support</option>
               </select>
             </div>
-            <div><label>Experience Level</label><input /></div>
-            <div><label>Languages</label><input /></div>
-            <div><label>Skills</label><input /></div>
-            <div><label>Projects</label><input /></div>
-            <div><label>Education</label><input /></div>
             <div><label>Resume/Profile link</label><input /></div>
+            <div class="entry-group" data-repeatable-group data-field-name="Experience Level">
+              <div class="entry-group-header">
+                <label>Experience Level</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add experience level entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Languages">
+              <div class="entry-group-header">
+                <label>Languages</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add language entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Skills">
+              <div class="entry-group-header">
+                <label>Skills</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add skill entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Projects">
+              <div class="entry-group-header">
+                <label>Projects</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add project entry" /></div>
+              </div>
+            </div>
+            <div class="entry-group" data-repeatable-group data-field-name="Education">
+              <div class="entry-group-header">
+                <label>Education</label>
+                <div class="entry-group-actions">
+                  <button class="btn ghost entry-btn" type="button" data-repeat-add>Add +</button>
+                  <button class="btn ghost entry-btn" type="button" data-repeat-remove>Remove -</button>
+                </div>
+              </div>
+              <div class="entry-list" data-repeat-list>
+                <div class="entry-row"><input placeholder="Add education entry" /></div>
+              </div>
+            </div>
           </div>
           <div class="form-actions">
             <button class="btn primary" type="submit">Submit Application</button
