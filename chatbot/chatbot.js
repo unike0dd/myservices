@@ -429,6 +429,7 @@
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (chatbot.contains(target)) return;
+      if (launcher && launcher.contains(target)) return;
       if (Array.from(openLinks).some((openLink) => openLink.contains(target))) {
         return;
       }
