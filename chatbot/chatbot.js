@@ -415,11 +415,7 @@
     if (launcher) {
       launcher.addEventListener("click", (e) => {
         e.preventDefault();
-        if (chatbot && chatbot.classList.contains("minimized")) {
-          openChatbot();
-          return;
-        }
-        closeChatbot();
+        openChatbot();
       });
     }
 

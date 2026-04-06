@@ -1,4 +1,11 @@
 /* chatbot */
+:root {
+  --chatbot-fab-right: 15px;
+  --chatbot-fab-bottom: 15px;
+  --chatbot-fab-size: 60px;
+  --chatbot-fab-gap: 7px;
+}
+
 #chatbot-container {
   --clr-primary: #00c4ff;
   --clr-accent: #ff3bdb;
@@ -10,13 +17,11 @@
   --clr-text: #fff;
   --clr-user-text: #000;
   --clr-border: #ff3bdb;
-
-  --chatbot-fab-right: 15px;
-  --chatbot-fab-bottom: 15px;
-  --chatbot-fab-size: 60px;
   position: fixed;
   right: var(--chatbot-fab-right);
-  bottom: calc(var(--chatbot-fab-bottom) + var(--chatbot-fab-size) + 7px);
+  bottom: calc(
+    var(--chatbot-fab-bottom) + var(--chatbot-fab-size) + var(--chatbot-fab-gap)
+  );
   width: min(90vw, 420px);
   height: 90vh;
   min-height: 420px;
@@ -198,7 +203,7 @@
   #chatbot-container {
     right: 15px;
     left: auto;
-    bottom: calc(15px + var(--chatbot-fab-size) + 7px);
+    bottom: calc(15px + var(--chatbot-fab-size) + var(--chatbot-fab-gap));
     width: 90vw;
     height: 90vh;
     max-height: 90vh;
@@ -213,7 +218,7 @@
 @media (max-width: 640px) {
   #chatbot-container {
     right: 15px;
-    bottom: calc(15px + var(--chatbot-fab-size) + 7px);
+    bottom: calc(15px + var(--chatbot-fab-size) + var(--chatbot-fab-gap));
     width: 90vw;
     height: 90vh;
     min-height: 90vh;
