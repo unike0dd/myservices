@@ -215,22 +215,28 @@
   #chatbot-container {
     right: 15px;
     left: auto;
-    bottom: 90px;
+    bottom: 15px;
     width: 90vw;
     height: 90vh;
     max-height: 90vh;
     border-radius: 18px;
+  }
+  #chatbot-launcher {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
   #chatbot-container {
     right: 15px;
-    bottom: 90px;
+    bottom: 15px;
     width: 90vw;
     height: 90vh;
     min-height: 90vh;
     max-height: 90vh;
     border-radius: 18px;
+  }
+  #chatbot-launcher {
+    display: none;
   }
 }
