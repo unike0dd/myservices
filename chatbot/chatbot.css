@@ -17,6 +17,10 @@
   --clr-text: #fff;
   --clr-user-text: #000;
   --clr-border: #ff3bdb;
+  --chatbot-fab-right: 15px;
+  --chatbot-fab-bottom: 15px;
+  --chatbot-fab-size: 60px;
+  --chatbot-fab-gap: 7px;
   position: fixed;
   right: var(--chatbot-fab-right);
   bottom: calc(

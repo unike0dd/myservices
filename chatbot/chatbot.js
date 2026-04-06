@@ -162,7 +162,7 @@
       launcherNode.classList.add("visible");
       launcherNode.setAttribute("aria-label", "Open chatbot");
       launcherNode.setAttribute("aria-expanded", "false");
-      launcherNode.innerHTML = '<i class="fas fa-message" aria-hidden="true"></i>';
+      launcherNode.innerHTML = '<span aria-hidden="true">💬</span>';
       return launcherNode;
     }
 
