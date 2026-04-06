@@ -198,12 +198,24 @@
   z-index: 59;
 }
 #chatbot-launcher i,
-#chatbot-launcher span {
+#chatbot-launcher .chatbot-launcher-mobile-icon {
   font-size: 1.25rem;
   line-height: 1;
 }
 
+#chatbot-launcher .chatbot-launcher-mobile-icon {
+  display: none;
+}
+
 @media (max-width: 900px) {
+  #chatbot-launcher .fa-message {
+    display: none;
+  }
+
+  #chatbot-launcher .chatbot-launcher-mobile-icon {
+    display: inline-flex;
+  }
+
   #chatbot-container {
     right: 15px;
     left: auto;

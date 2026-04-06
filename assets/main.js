@@ -15,6 +15,32 @@
     topbar.appendChild(nav);
   }
 
+
+  function ensureMobileNav() {
+    if (document.querySelector(".mobile-nav")) return;
+
+    const mobileNav = document.createElement("nav");
+    mobileNav.className = "mobile-nav";
+    mobileNav.setAttribute("aria-label", "Mobile Navigation");
+    mobileNav.innerHTML = `
+      <div id="services-dropup" class="services-dropup">
+        <a href="/myservices/services/logistics-operations/">Logistics</a>
+        <a href="/myservices/services/administrative-backoffice/">Admin Back Office</a>
+        <a href="/myservices/services/customer-relations/">Customer Relations</a>
+        <a href="/myservices/services/it-support/">IT Support</a>
+      </div>
+      <div class="menu">
+        <a href="/myservices/">Home</a>
+        <button id="mobile-services-toggle" type="button">Services</button>
+        <a href="/myservices/careers/">Careers</a>
+        <a href="#chatbot-container">Chatbot</a>
+        <a href="/myservices/contact/">Contact</a>
+      </div>
+    `;
+
+    document.body.appendChild(mobileNav);
+  }
+
   function ensureSkipLink() {
     if (document.querySelector(".skip-link")) return;
     const target =
@@ -164,6 +190,7 @@
   }
 
   ensurePrimaryNav();
+  ensureMobileNav();
   ensureSkipLink();
   activateServiceLetterScramble();
   initRepeatableEntryGroups();
