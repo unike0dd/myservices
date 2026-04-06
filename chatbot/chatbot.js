@@ -4,7 +4,7 @@
 
   const CHATBOT_SHELL_URL = "/myservices/chatbot/chatbot.html";
   const CHATBOT_FALLBACK_SHELL = `
-<div id="chatbot-container" role="dialog" aria-label="Gabo chatbot">
+<div id="chatbot-container" class="minimized" role="dialog" aria-label="Gabo chatbot">
   <div id="chatbot-header">
     <span>Gabo</span>
     <div id="chatbot-header-controls">
