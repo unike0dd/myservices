@@ -362,6 +362,22 @@ textarea {
     display: block;
   }
 }
+@media (max-width: 1024px) {
+  .services-page .services-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.9rem;
+    scroll-snap-type: y mandatory;
+  }
+  .services-page .services-grid .card {
+    width: 95%;
+    min-height: calc(100svh - 190px);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
 @media (max-width: 1200px) and (min-width: 901px) {
   .grid.four {
     grid-template-columns: repeat(3, minmax(0, 1fr));
