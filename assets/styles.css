@@ -156,6 +156,12 @@ header {
   margin-top: 0.2rem;
   color: var(--brand-navy);
 }
+.service-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .services-grid .card {
   padding-bottom: calc(1rem + 7px);
 }
