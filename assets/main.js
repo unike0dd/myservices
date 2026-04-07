@@ -167,6 +167,72 @@
     });
   }
 
+
+  function initScrollLazyLoad() {
+    const lazyTargets = Array.from(
+      document.querySelectorAll('.section, .card, .footer-grid > div')
+    );
+    if (!lazyTargets.length) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      lazyTargets.forEach((target) => target.classList.add('is-visible'));
+      return;
+    }
+
+    lazyTargets.forEach((target, index) => {
+      if (index < 2) {
+        target.classList.add('is-visible');
+        return;
+      }
+      target.classList.add('lazy-on-scroll');
+    });
+
+    const observer = new IntersectionObserver(
+      (entries, intersectionObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          intersectionObserver.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: '0px 0px 120px 0px',
+        threshold: 0.12,
+      }
+    );
+
+    lazyTargets
+      .filter((target) => target.classList.contains('lazy-on-scroll'))
+      .forEach((target) => observer.observe(target));
+  }
+
+  function initLazyChatbotLoad() {
+    let chatbotLoaded = false;
+
+    const loadOnce = () => {
+      if (chatbotLoaded) return;
+      chatbotLoaded = true;
+      loadChatbotAssets();
+      window.removeEventListener('scroll', handleScrollLoad);
+    };
+
+    const handleScrollLoad = () => {
+      if (window.scrollY > 180) loadOnce();
+    };
+
+    window.addEventListener('scroll', handleScrollLoad, { passive: true });
+
+    const launcher = document.getElementById('chatbot-launcher');
+    const opener = document.getElementById('open-chatbot-link');
+    [launcher, opener].forEach((node) => {
+      if (!node) return;
+      node.addEventListener('pointerenter', loadOnce, { once: true });
+      node.addEventListener('focus', loadOnce, { once: true });
+      node.addEventListener('click', loadOnce, { once: true });
+    });
+  }
+
   function loadChatbotAssets() {
     if (!document.querySelector('link[data-fontawesome-chatbot="true"]')) {
       const iconCss = document.createElement("link");
@@ -202,5 +268,6 @@
   activateServiceLetterScramble();
   initRepeatableEntryGroups();
   initMobileServiceMenu();
-  loadChatbotAssets();
+  initScrollLazyLoad();
+  initLazyChatbotLoad();
 })();

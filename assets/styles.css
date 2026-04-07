@@ -192,6 +192,27 @@ header {
 .muted {
   color: var(--muted);
 }
+
+.lazy-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 320ms ease, transform 320ms ease;
+  will-change: opacity, transform;
+}
+
+.lazy-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lazy-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 footer {
   background: var(--brand-navy);
   color: #e5efff;
@@ -367,7 +388,8 @@ textarea {
   }
 }
 @media (max-width: 1024px) {
-  .services-page .services-grid {
+  .services-page .services-grid,
+  .services-preview-grid {
     grid-template-columns: 1fr;
     justify-items: center;
     gap: 0.9rem;
@@ -376,6 +398,14 @@ textarea {
   .services-page .services-grid .card {
     width: 95%;
     min-height: calc(100svh - 190px);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .services-preview-grid .service-card {
+    width: 85%;
+    min-height: 95svh;
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
