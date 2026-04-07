@@ -98,6 +98,13 @@
     targets.forEach((node, idx) => {
       const delay = idx * 220;
       const finalText = (node.dataset.scramble || node.textContent || "").trim();
+
+      node.textContent = finalText;
+      const finalHeight = Math.ceil(node.getBoundingClientRect().height);
+      if (finalHeight > 0) {
+        node.style.minHeight = `${finalHeight}px`;
+      }
+
       node.textContent = finalText.replace(/[A-Za-z]/g, () => randomLetter());
       setTimeout(() => scrambleToText(node), delay);
     });
