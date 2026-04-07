@@ -156,6 +156,12 @@ header {
   margin-top: 0.2rem;
   color: var(--brand-navy);
 }
+.services-grid .card {
+  padding-bottom: calc(1rem + 7px);
+}
+.services-grid .card h3 {
+  margin-top: calc(0.2rem + 4px);
+}
 .service-card {
   padding-top: calc(1rem + 2.5px);
   padding-bottom: calc(1rem + 2.5px);
