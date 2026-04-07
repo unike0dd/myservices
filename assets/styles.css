@@ -192,6 +192,27 @@ header {
 .muted {
   color: var(--muted);
 }
+
+.lazy-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 320ms ease, transform 320ms ease;
+  will-change: opacity, transform;
+}
+
+.lazy-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lazy-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 footer {
   background: var(--brand-navy);
   color: #e5efff;
