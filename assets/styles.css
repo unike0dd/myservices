@@ -363,23 +363,19 @@ textarea {
   }
 }
 @media (max-width: 1024px) {
-  .services-page .services-grid,
-  .services-preview-grid {
+  .services-page .services-grid {
     grid-template-columns: 1fr;
     justify-items: center;
     gap: 0.9rem;
     scroll-snap-type: y mandatory;
   }
-  .services-page .services-grid .card,
-  .services-preview-grid .card {
+  .services-page .services-grid .card {
     width: 95%;
-    height: calc(100svh - 190px);
+    min-height: calc(100svh - 190px);
     scroll-snap-align: start;
-    scroll-snap-stop: always;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: auto;
   }
 }
 @media (max-width: 1200px) and (min-width: 901px) {
