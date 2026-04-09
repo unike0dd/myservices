@@ -388,6 +388,9 @@ textarea {
   }
 }
 @media (max-width: 1024px) {
+  .grid.four {
+    grid-template-columns: 1fr;
+  }
   .services-page .services-grid,
   .services-preview-grid {
     grid-template-columns: 1fr;
