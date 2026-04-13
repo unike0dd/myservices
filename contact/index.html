@@ -29,12 +29,39 @@
           <div class="form-grid">
             <div><label>Full Name</label><input /></div>
             <div><label>Email Address</label><input type="email" /></div>
-            <div><label>Country Code</label><input /></div>
-            <div><label>Contact Number</label><input /></div>
+            <div>
+              <label>Country Code</label>
+              <input
+                type="tel"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                data-numeric-only
+                autocomplete="tel-country-code"
+              />
+            </div>
+            <div>
+              <label>Contact Number</label>
+              <input
+                type="tel"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                data-numeric-only
+                autocomplete="tel-national"
+              />
+            </div>
             <div><label>City</label><input /></div>
             <div><label>State/Province</label><input /></div>
             <div><label>Space/Suite/Apt</label><input /></div>
-            <div><label>Country Zip Code</label><input /></div>
+            <div>
+              <label>Country Zip Code</label>
+              <input
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                data-numeric-only
+                autocomplete="postal-code"
+              />
+            </div>
             <div class="entry-group best-contact-time">
               <label>Best Time to Contact You</label>
               <div class="best-contact-row">

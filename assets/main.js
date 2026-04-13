@@ -154,6 +154,36 @@
     });
   }
 
+  function initNumericOnlyInputs() {
+    const numericInputs = document.querySelectorAll("input[data-numeric-only]");
+    if (!numericInputs.length) return;
+
+    const keepOnlyDigits = (value) => value.replace(/\D+/g, "");
+
+    numericInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const sanitized = keepOnlyDigits(input.value);
+        if (input.value !== sanitized) {
+          input.value = sanitized;
+        }
+      });
+
+      input.addEventListener("paste", (event) => {
+        event.preventDefault();
+        const clipboardText = event.clipboardData?.getData("text") || "";
+        const sanitized = keepOnlyDigits(clipboardText);
+        if (document.queryCommandSupported?.("insertText")) {
+          document.execCommand("insertText", false, sanitized);
+          return;
+        }
+        const start = input.selectionStart ?? input.value.length;
+        const end = input.selectionEnd ?? input.value.length;
+        input.value =
+          input.value.slice(0, start) + sanitized + input.value.slice(end);
+      });
+    });
+  }
+
   function initMobileServiceMenu() {
     const serviceBtn = document.getElementById("mobile-services-toggle");
     const dropup = document.getElementById("services-dropup");
@@ -267,6 +297,7 @@
   ensureSkipLink();
   activateServiceLetterScramble();
   initRepeatableEntryGroups();
+  initNumericOnlyInputs();
   initMobileServiceMenu();
   initScrollLazyLoad();
   initLazyChatbotLoad();
