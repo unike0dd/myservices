@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="careers-worker-endpoint"
+      content="https://careers-intake.rulathemtodos.workers.dev/api/careers"
+    />
     <title>Careers</title>
     <link rel="stylesheet" href="/myservices/assets/styles.css" />
   </head>
@@ -24,7 +28,7 @@
           Apply to support operations, communication, and service delivery
           workflows across all service domains.
         </p>
-        <form>
+        <form data-worker-target="careers">
           <div class="form-grid">
             <div><label>Full Name</label><input /></div>
             <div><label>Email Address</label><input type="email" /></div>

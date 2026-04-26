@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="contact-worker-endpoint"
+      content="https://contact-intake.rulathemtodos.workers.dev/api/contact"
+    />
     <title>Contact</title>
     <link rel="stylesheet" href="/myservices/assets/styles.css" />
   </head>
@@ -24,7 +28,7 @@
           Get in touch for support, onboarding, projects, and partnership
           opportunities.
         </p>
-        <form>
+        <form data-worker-target="contact">
           <div class="form-grid">
             <div><label>Full Name</label><input /></div>
             <div><label>Email Address</label><input type="email" /></div>

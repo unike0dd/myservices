@@ -75,6 +75,10 @@
     const CF_WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
     const CF_WORKER_CHATBOT = CF_WORKER_BASE + "/api/chat";
     const WORKER_MODE = "iframe_service_qa";
+    const STRICT_EMBED_PARENTS = new Set([
+      "https://www.gabo.services",
+      "https://gabo.services",
+    ]);
     const ORIGIN_ASSET_MAP = {
       "https://www.gabo.services":
         "b91f605b23748de5cf02db0de2dd59117b31c709986a3c72837d0af8756473cf2779c206fc6ef80a57fdeddefa4ea11b972572f3a8edd9ed77900f9385e94bd6",
@@ -137,6 +141,10 @@
       return String(text || "")
         .replace(/\u0000/g, "")
         .replace(/[\u2028\u2029]/g, " ");
+    }
+
+    function resolveWorkerTenantMode() {
+      return STRICT_EMBED_PARENTS.has(CURRENT_ORIGIN) ? "iframe" : "direct";
     }
 
     function openChatbot() {
@@ -313,18 +321,23 @@
     }
 
     async function streamWorkerReply(message, bubble) {
+      const tenantMode = resolveWorkerTenantMode();
+      const headers = {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
+        "x-ops-asset-id": OPS_ASSET_ID,
+      };
+      if (tenantMode === "iframe") {
+        headers["x-gabo-parent-origin"] = CURRENT_ORIGIN;
+      }
+
       const resp = await fetch(CF_WORKER_CHATBOT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "text/event-stream",
-          "x-gabo-parent-origin": CURRENT_ORIGIN,
-          "x-ops-asset-id": OPS_ASSET_ID,
-        },
+        headers,
         body: JSON.stringify({
           mode: WORKER_MODE,
           messages: [{ role: "user", content: message }],
-          meta: {},
+          meta: { tenant_origin: CURRENT_ORIGIN, tenant_mode: tenantMode },
         }),
       });
 
