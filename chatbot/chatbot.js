@@ -72,14 +72,21 @@
     const send = qs("#chatbot-send");
     const statusNode = ensureStatusNode(qs("#chatbot-header-controls"));
     // Cloudflare Worker gateway used by the repo to route end-user data.
-    const CF_WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
+    const CF_WORKER_BASE = "https://drastic-worker.rulathemtodos.workers.dev";
     const CF_WORKER_CHATBOT = CF_WORKER_BASE + "/api/chat";
-    const WORKER_MODE = "iframe_service_qa";
     const ORIGIN_ASSET_MAP = {
       "https://www.gabo.services":
         "b91f605b23748de5cf02db0de2dd59117b31c709986a3c72837d0af8756473cf2779c206fc6ef80a57fdeddefa4ea11b972572f3a8edd9ed77900f9385e94bd6",
       "https://gabo.services":
         "8cdeef86bd180277d5b080d571ad8e6dbad9595f408b58475faaa3161f07448fbf12799ee199e3ee257405b75de555055fd5f43e0ce75e0740c4dc11bf86d132",
+      "https://www.gabos.io":
+        "b91f605b23748de5cf02db0de2dd59117b31c709986a3c72837d0af8756473cf2779c206fc6ef80a57fdeddefa4ea11b972572f3a8edd9ed77900f9385e94bd6",
+      "https://gabos.io":
+        "8cdeef86bd180277d5b080d571ad8e6dbad9595f408b58475faaa3161f07448fbf12799ee199e3ee257405b75de555055fd5f43e0ce75e0740c4dc11bf86d132",
+      "https://chattiavato-a11y.github.io":
+        "b8f12ffa3559cee4ac71cb5f54eba1aed46394027f52e562d20be7a523db2a036f20c6e8fb0577c0a8d58f2fd198046230ebc0a73f4f1e71ff7c377d656f0756",
+      "https://drastic-worker.rulathemtodos.workers.dev":
+        "96dd27ea493d045ed9b46d72533e2ed2ec897668e2227dd3d79fff85ca2216a569c4bf622790c6fb0aab9f17b4e92d0f8e0fa040356bee68a9c3d50d5a60c945",
     };
     const CURRENT_ORIGIN = window.location.origin;
     const QUERY_ASSET_ID = new URLSearchParams(window.location.search).get(
@@ -322,7 +329,6 @@
           "x-ops-asset-id": OPS_ASSET_ID,
         },
         body: JSON.stringify({
-          mode: WORKER_MODE,
           messages: [{ role: "user", content: message }],
           meta: {},
         }),

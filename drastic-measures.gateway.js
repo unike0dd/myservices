@@ -44,7 +44,7 @@ const FALLBACK_ALLOWED_ORIGINS = [
   "https://www.gabos.io",
   "https://gabos.io",
   "https://chattiavato-a11y.github.io",
-  "https://drastic-measures.rulathemtodos.workers.dev",
+  "https://drastic-worker.rulathemtodos.workers.dev",
 ];
 
 const FALLBACK_ORIGIN_TO_ASSET = {
@@ -54,7 +54,7 @@ const FALLBACK_ORIGIN_TO_ASSET = {
     "8cdeef86bd180277d5b080d571ad8e6dbad9595f408b58475faaa3161f07448fbf12799ee199e3ee257405b75de555055fd5f43e0ce75e0740c4dc11bf86d132",
   "https://chattiavato-a11y.github.io":
     "b8f12ffa3559cee4ac71cb5f54eba1aed46394027f52e562d20be7a523db2a036f20c6e8fb0577c0a8d58f2fd198046230ebc0a73f4f1e71ff7c377d656f0756",
-  "https://drastic-measures.rulathemtodos.workers.dev":
+  "https://drastic-worker.rulathemtodos.workers.dev":
     "96dd27ea493d045ed9b46d72533e2ed2ec897668e2227dd3d79fff85ca2216a569c4bf622790c6fb0aab9f17b4e92d0f8e0fa040356bee68a9c3d50d5a60c945",
 };
 
@@ -890,7 +890,7 @@ function requireBrain(env) {
 
 async function callBrainChat(cfg, env, payload, origin, assetId) {
   const brain = requireBrain(env);
-  const safeOrigin = toStr(origin).trim() || "https://drastic-measures.rulathemtodos.workers.dev";
+  const safeOrigin = toStr(origin).trim() || "https://drastic-worker.rulathemtodos.workers.dev";
   const safeAssetId = toStr(assetId).trim();
 
   return brain.fetch("https://brain/api/chat", {
