@@ -71,8 +71,9 @@
     const input = qs("#chatbot-input");
     const send = qs("#chatbot-send");
     const statusNode = ensureStatusNode(qs("#chatbot-header-controls"));
-    const WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
-    const WORKER_CHAT = WORKER_BASE + "/api/chat";
+    // Cloudflare Worker gateway used by the repo to route end-user data.
+    const CF_WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
+    const CF_WORKER_CHATBOT = CF_WORKER_BASE + "/api/chat";
     const WORKER_MODE = "iframe_service_qa";
     const ORIGIN_ASSET_MAP = {
       "https://www.gabo.services":
@@ -301,7 +302,7 @@
     }
 
     async function streamWorkerReply(message, bubble) {
-      const resp = await fetch(WORKER_CHAT, {
+      const resp = await fetch(CF_WORKER_CHATBOT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

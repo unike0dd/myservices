@@ -63,6 +63,31 @@
     </section>
     <section class="section">
       <div class="container">
+        <h2>Cloudflare Worker communication flow</h2>
+        <p class="muted">
+          End-user form and chatbot data are sent from this repository to dedicated
+          Cloudflare Worker endpoints, which then relay requests to Apps Script and
+          the chatbot brain for processing and responses.
+        </p>
+        <div class="grid four services-preview-grid">
+          <article class="card service-card">
+            <h3>CF Worker Chatbot</h3>
+            <p>Handles chatbot prompts and routes responses back to the interface.</p>
+          </article>
+          <article class="card service-card">
+            <h3>CF Worker Careers</h3>
+            <p>Receives careers submissions and forwards candidate data securely.</p>
+          </article>
+          <article class="card service-card">
+            <h3>CF Worker Contact</h3>
+            <p>Processes contact inquiries and delivers data to backend workflows.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
         <h2>Service areas built for daily execution</h2>
         <div class="grid four services-preview-grid">
           <article class="card service-card">
