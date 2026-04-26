@@ -196,7 +196,7 @@
         <a href="/myservices/">Home</a>
         <button id="mobile-services-toggle" type="button">Services</button>
         <a href="/myservices/careers/">Careers</a>
-        <a href="#chatbot-container">Chatbot</a>
+        <a href="#chatbot-container" id="open-chatbot-link">Chatbot</a>
         <a href="/myservices/contact/">Contact</a>
       </div>
     `;
@@ -400,6 +400,63 @@
       .forEach((target) => observer.observe(target));
   }
 
+
+
+  function ensureChatbotShell() {
+    if (!document.getElementById("chatbot-container")) {
+      const container = document.createElement("div");
+      container.id = "chatbot-container";
+      container.className = "minimized";
+      container.setAttribute("role", "dialog");
+      container.setAttribute("aria-label", "Gabo chatbot");
+      container.innerHTML = `
+        <div id="chatbot-header">
+          <span>Gabo</span>
+          <div id="chatbot-header-controls">
+            <button id="chatbot-minimize" type="button" aria-label="Minimize">&minus;</button>
+            <button id="chatbot-close" type="button" aria-label="Close">&#10005;</button>
+          </div>
+        </div>
+        <div id="chat-log" aria-live="polite"></div>
+        <div id="chatbot-form-container">
+          <form id="chatbot-input-row" autocomplete="off">
+            <input
+              id="chatbot-input"
+              type="text"
+              placeholder="Type your message here"
+              required
+              maxlength="1000"
+            />
+            <button id="chatbot-send" type="submit" aria-label="Send">Send</button>
+          </form>
+          <button id="chatbot-close-footer" type="button">Close</button>
+        </div>
+      `;
+      document.body.appendChild(container);
+    }
+
+    if (!document.getElementById("chatbot-backdrop")) {
+      const backdrop = document.createElement("div");
+      backdrop.id = "chatbot-backdrop";
+      backdrop.className = "hidden";
+      backdrop.setAttribute("aria-hidden", "true");
+      document.body.appendChild(backdrop);
+    }
+
+    if (!document.getElementById("chatbot-launcher")) {
+      const launcher = document.createElement("button");
+      launcher.id = "chatbot-launcher";
+      launcher.className = "visible";
+      launcher.type = "button";
+      launcher.setAttribute("aria-label", "Open chatbot");
+      launcher.setAttribute("aria-expanded", "false");
+      launcher.innerHTML = '<span aria-hidden="true">💬</span>';
+      document.body.appendChild(launcher);
+    }
+
+    const openLink = document.querySelector('a[href="#chatbot-container"]');
+    if (openLink && !openLink.id) openLink.id = "open-chatbot-link";
+  }
   function initLazyChatbotLoad() {
     let chatbotLoaded = false;
 
@@ -465,5 +522,6 @@
   initSecureForms();
   initMobileServiceMenu();
   initScrollLazyLoad();
+  ensureChatbotShell();
   initLazyChatbotLoad();
 })();
