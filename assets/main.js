@@ -1,4 +1,147 @@
 (function () {
+  const CORS_ALLOWLIST = [
+    window.location.origin,
+    "https://con-artist.rulathemtodos.workers.dev",
+  ];
+
+  function simpleThreatScore(value) {
+    const text = String(value || "");
+    if (!text.trim()) return 0;
+    const patterns = [
+      /<\s*script/gi,
+      /javascript:/gi,
+      /on[a-z]+\s*=/gi,
+      /<\/?[a-z][\s\S]*?>/gi,
+      /union\s+select/gi,
+      /\b(drop|truncate|alter)\s+table\b/gi,
+      /\.\.\//g,
+      /%3cscript/gi,
+      /\beval\s*\(/gi,
+      /\bdocument\.cookie\b/gi,
+      /\b(localStorage|sessionStorage)\b/gi,
+    ];
+    return patterns.reduce((score, pattern) => {
+      const matches = text.match(pattern);
+      return score + (matches ? matches.length : 0);
+    }, 0);
+  }
+
+  function sanitizeTextValue(value) {
+    return String(value || "")
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/[<>`$\\]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  async function sha256Hex(value) {
+    const source = String(value || "");
+    if (!window.crypto?.subtle || !window.TextEncoder) return "";
+    const digest = await window.crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(source),
+    );
+    return Array.from(new Uint8Array(digest))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  function scanAndSanitizePayload(payload) {
+    const report = [];
+    const cleaned = {};
+
+    Object.entries(payload || {}).forEach(([key, rawValue]) => {
+      const normalized = sanitizeTextValue(rawValue);
+      const threatScore = simpleThreatScore(rawValue);
+      cleaned[key] = normalized;
+      report.push({ key, threatScore, blocked: threatScore >= 2 });
+    });
+
+    const blocked = report.some((entry) => entry.blocked);
+    return { cleaned, report, blocked };
+  }
+
+  function markFieldState(field, isInvalid) {
+    if (!(field instanceof HTMLElement)) return;
+    field.setAttribute("aria-invalid", String(isInvalid));
+    field.classList.toggle("is-security-warning", isInvalid);
+  }
+
+  function secureFormSubmission(form, statusNode) {
+    const elements = Array.from(
+      form.querySelectorAll("input, textarea, select"),
+    ).filter((field) => !field.disabled);
+
+    const payload = {};
+    elements.forEach((field) => {
+      const key =
+        field.getAttribute("name") ||
+        field.getAttribute("aria-label") ||
+        field.previousElementSibling?.textContent ||
+        field.id ||
+        "field";
+      payload[key] = field.value;
+    });
+
+    const result = scanAndSanitizePayload(payload);
+    elements.forEach((field) => {
+      const key =
+        field.getAttribute("name") ||
+        field.getAttribute("aria-label") ||
+        field.previousElementSibling?.textContent ||
+        field.id ||
+        "field";
+      const line = result.report.find((entry) => entry.key === key);
+      const isInvalid = !!line?.blocked;
+      markFieldState(field, isInvalid);
+      if (!isInvalid && typeof result.cleaned[key] === "string") {
+        field.value = result.cleaned[key];
+      }
+    });
+
+    if (statusNode) {
+      statusNode.textContent = result.blocked
+        ? "Potentially malicious input was blocked. Please remove script/code fragments."
+        : "Input passed sanitization and integrity checks.";
+    }
+
+    return result;
+  }
+
+  function initSecureForms() {
+    const forms = document.querySelectorAll("form");
+    if (!forms.length) return;
+
+    forms.forEach((form) => {
+      const message =
+        form.querySelector("[data-security-status]") ||
+        form.querySelector(".form-status");
+      if (message) {
+        message.setAttribute("aria-live", "polite");
+      }
+
+      form.addEventListener("submit", async (event) => {
+        const result = secureFormSubmission(form, message);
+        if (result.blocked) {
+          event.preventDefault();
+          return;
+        }
+
+        const fingerprint = await sha256Hex(JSON.stringify(result.cleaned));
+        form.setAttribute("data-integrity-sha256", fingerprint);
+      });
+    });
+  }
+
+  function initSecurityRuntime() {
+    window.GaboSecurity = {
+      scanAndSanitizePayload,
+      sha256Hex,
+      corsAllowlist: CORS_ALLOWLIST.slice(),
+      frameworks: ["OWASP ASVS", "CISA CPG", "NIST CSF", "PCI DSS 4.0"],
+    };
+  }
+
   function ensurePrimaryNav() {
     if (document.querySelector(".main-nav")) return;
     const topbar = document.querySelector("header .topbar");
@@ -295,9 +438,11 @@
   ensurePrimaryNav();
   ensureMobileNav();
   ensureSkipLink();
+  initSecurityRuntime();
   activateServiceLetterScramble();
   initRepeatableEntryGroups();
   initNumericOnlyInputs();
+  initSecureForms();
   initMobileServiceMenu();
   initScrollLazyLoad();
   initLazyChatbotLoad();

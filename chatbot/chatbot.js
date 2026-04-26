@@ -300,7 +300,21 @@
       return !!OPS_ASSET_ID;
     }
 
+    function isCorsAllowed(url) {
+      try {
+        const targetOrigin = new URL(url, window.location.origin).origin;
+        const allowlist =
+          window.GaboSecurity?.corsAllowlist || [window.location.origin];
+        return allowlist.includes(targetOrigin);
+      } catch (_err) {
+        return false;
+      }
+    }
+
     async function streamWorkerReply(message, bubble) {
+      if (!isCorsAllowed(WORKER_CHAT)) {
+        throw new Error("CORS policy blocked destination");
+      }
       const resp = await fetch(WORKER_CHAT, {
         method: "POST",
         headers: {
@@ -375,16 +389,32 @@
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const msg = input.value.trim();
+        const rawMsg = input.value.trim();
+        const scanner = window.GaboSecurity?.scanAndSanitizePayload;
+        const scanResult = scanner
+          ? scanner({ chatbot_message: rawMsg })
+          : { cleaned: { chatbot_message: rawMsg }, blocked: false };
+        const msg = scanResult.cleaned.chatbot_message || "";
+
         if (!msg || !canTalkToWorker()) return;
+        if (scanResult.blocked) {
+          addMsg(
+            "Potentially malicious code was detected and removed before sending.",
+            "bot",
+          );
+          emitTelemetry("message_blocked", { length: rawMsg.length });
+          return;
+        }
         if (isRateLimited()) {
           setStatus("Rate limited");
           addMsg("You are sending messages too quickly. Please wait a minute.", "bot");
           emitTelemetry("rate_limited", { windowMs: RATE_LIMIT_WINDOW_MS, max: RATE_LIMIT_MAX_MESSAGES });
           return;
         }
+        const payloadHash = await (window.GaboSecurity?.sha256Hex?.(msg) ||
+          Promise.resolve(""));
         addMsg(msg, "user");
-        emitTelemetry("message_sent", { length: msg.length });
+        emitTelemetry("message_sent", { length: msg.length, sha256: payloadHash });
         input.value = "";
         input.focus();
         send.disabled = true;
