@@ -29,11 +29,38 @@
           <div class="form-grid">
             <div><label>Full Name</label><input /></div>
             <div><label>Email Address</label><input type="email" /></div>
-            <div><label>Country Code</label><input /></div>
-            <div><label>Contact Number</label><input /></div>
+            <div>
+              <label>Country Code</label>
+              <input
+                type="tel"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                data-numeric-only
+                autocomplete="tel-country-code"
+              />
+            </div>
+            <div>
+              <label>Contact Number</label>
+              <input
+                type="tel"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                data-numeric-only
+                autocomplete="tel-national"
+              />
+            </div>
             <div><label>City</label><input /></div>
             <div><label>State/Province</label><input /></div>
-            <div><label>Country Zip Code</label><input /></div>
+            <div>
+              <label>Country Zip Code</label>
+              <input
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                data-numeric-only
+                autocomplete="postal-code"
+              />
+            </div>
             <div><label>Availability</label><input /></div>
             <div>
               <label
@@ -47,6 +74,17 @@
               </select>
             </div>
             <div><label>Resume/Profile link</label><input /></div>
+            <div>
+              <label>Education Level</label>
+              <select>
+                <option>High School</option>
+                <option>Associate</option>
+                <option>Bachelor</option>
+                <option>Master</option>
+                <option>Doctorate</option>
+                <option>Certified</option>
+              </select>
+            </div>
             <div class="entry-group full-row" data-repeatable-group data-field-name="Experience Level">
               <div class="entry-group-header">
                 <label>Experience Level</label>
