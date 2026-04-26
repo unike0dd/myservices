@@ -129,7 +129,9 @@
   }
 
   function initSecureForms() {
-    const forms = document.querySelectorAll("form");
+    const forms = Array.from(document.querySelectorAll("form")).filter(
+      (form) => form.id !== "chatbot-input-row",
+    );
     if (!forms.length) return;
 
     forms.forEach((form) => {
@@ -443,6 +445,8 @@
       document.body.appendChild(backdrop);
     }
 
+    const launcherIcon = '<span aria-hidden="true">💬</span>';
+
     if (!document.getElementById("chatbot-launcher")) {
       const launcher = document.createElement("button");
       launcher.id = "chatbot-launcher";
@@ -450,8 +454,17 @@
       launcher.type = "button";
       launcher.setAttribute("aria-label", "Open chatbot");
       launcher.setAttribute("aria-expanded", "false");
-      launcher.innerHTML = '<span aria-hidden="true">💬</span>';
+      launcher.innerHTML = launcherIcon;
       document.body.appendChild(launcher);
+    }
+
+    const launcher = document.getElementById("chatbot-launcher");
+    if (launcher) {
+      launcher.innerHTML = launcherIcon;
+      launcher.setAttribute("aria-label", "Open chatbot");
+      if (!launcher.getAttribute("aria-expanded")) {
+        launcher.setAttribute("aria-expanded", "false");
+      }
     }
 
     const openLink = document.querySelector('a[href="#chatbot-container"]');
