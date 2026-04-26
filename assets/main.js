@@ -7,7 +7,6 @@
     nav.className = "main-nav";
     nav.innerHTML = `
       <a href="/myservices/about/">About</a>
-      <a href="/myservices/services/">Services</a>
       <a href="/myservices/careers/">Careers</a>
       <a href="/myservices/contact/">Contact</a>
       <a href="/myservices/learning/">Learning</a>
