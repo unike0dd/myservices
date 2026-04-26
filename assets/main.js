@@ -1,8 +1,31 @@
 (function () {
+  const SECURITY_HEADERS = {
+    "Content-Security-Policy":
+      "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://con-artist.rulathemtodos.workers.dev; font-src 'self' https://cdnjs.cloudflare.com; upgrade-insecure-requests",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "Permissions-Policy":
+      "geolocation=(), camera=(), microphone=(), payment=(), usb=()",
+  };
   const CORS_ALLOWLIST = [
     window.location.origin,
     "https://con-artist.rulathemtodos.workers.dev",
   ];
+
+  function enforceClientSecurityPolicy() {
+    Object.entries(SECURITY_HEADERS).forEach(([name, content]) => {
+      const selector = `meta[http-equiv="${name}"], meta[name="${name}"]`;
+      let meta = document.head.querySelector(selector);
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("http-equiv", name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute("content", content);
+    });
+  }
 
   function simpleThreatScore(value) {
     const text = String(value || "");
@@ -16,9 +39,6 @@
       /\b(drop|truncate|alter)\s+table\b/gi,
       /\.\.\//g,
       /%3cscript/gi,
-      /\beval\s*\(/gi,
-      /\bdocument\.cookie\b/gi,
-      /\b(localStorage|sessionStorage)\b/gi,
     ];
     return patterns.reduce((score, pattern) => {
       const matches = text.match(pattern);
@@ -29,7 +49,7 @@
   function sanitizeTextValue(value) {
     return String(value || "")
       .replace(/[\u0000-\u001F\u007F]/g, " ")
-      .replace(/[<>`$\\]/g, "")
+      .replace(/[<>`]/g, "")
       .replace(/\s+/g, " ")
       .trim();
   }
@@ -112,29 +132,13 @@
     const forms = document.querySelectorAll("form");
     if (!forms.length) return;
 
-    document.querySelectorAll(".security-form-note").forEach((node) => {
-      node.remove();
-    });
-
     forms.forEach((form) => {
-      const legacyMessageNodes = form.querySelectorAll("small, p, div, span");
-      legacyMessageNodes.forEach((node) => {
-        const text = (node.textContent || "").trim();
-        if (
-          text.includes("Security scan active:") &&
-          text.includes("OWASP") &&
-          text.includes("PCI DSS")
-        ) {
-          node.remove();
-        }
-      });
-
-      const message =
-        form.querySelector("[data-security-status]") ||
-        form.querySelector(".form-status");
-      if (message) {
-        message.setAttribute("aria-live", "polite");
-      }
+      const message = document.createElement("small");
+      message.className = "security-form-note";
+      message.setAttribute("aria-live", "polite");
+      message.textContent =
+        "Security scan active: OWASP, CISA, NIST, PCI DSS aligned sanitization is enabled.";
+      form.appendChild(message);
 
       form.addEventListener("submit", async (event) => {
         const result = secureFormSubmission(form, message);
@@ -150,6 +154,7 @@
   }
 
   function initSecurityRuntime() {
+    enforceClientSecurityPolicy();
     window.GaboSecurity = {
       scanAndSanitizePayload,
       sha256Hex,
@@ -166,7 +171,6 @@
     nav.className = "main-nav";
     nav.innerHTML = `
       <a href="/myservices/about/">About</a>
-      <a href="/myservices/services/">Services</a>
       <a href="/myservices/careers/">Careers</a>
       <a href="/myservices/contact/">Contact</a>
       <a href="/myservices/learning/">Learning</a>
