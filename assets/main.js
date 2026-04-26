@@ -1,38 +1,7 @@
 (function () {
-  const CHATBOT_WORKER_ORIGIN = "https://con-artist.rulathemtodos.workers.dev";
-  const FORM_WORKER_DEFAULTS = {
-    careers: "https://careers-intake.rulathemtodos.workers.dev/api/careers",
-    contact: "https://contact-intake.rulathemtodos.workers.dev/api/contact",
-  };
-  const PAGE_WORKER_ENDPOINTS = {
-    careers:
-      document
-        .querySelector('meta[name="careers-worker-endpoint"]')
-        ?.getAttribute("content")
-        ?.trim() || FORM_WORKER_DEFAULTS.careers,
-    contact:
-      document
-        .querySelector('meta[name="contact-worker-endpoint"]')
-        ?.getAttribute("content")
-        ?.trim() || FORM_WORKER_DEFAULTS.contact,
-  };
-  const KNOWN_CONNECT_ORIGINS = Array.from(
-    new Set(
-      [CHATBOT_WORKER_ORIGIN]
-        .concat(Object.values(PAGE_WORKER_ENDPOINTS))
-        .map((url) => {
-          try {
-            return new URL(url, window.location.origin).origin;
-          } catch (_err) {
-            return "";
-          }
-        })
-        .filter(Boolean),
-    ),
-  );
   const SECURITY_HEADERS = {
     "Content-Security-Policy":
-      `default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' ${KNOWN_CONNECT_ORIGINS.join(" ")}; font-src 'self' https://cdnjs.cloudflare.com; upgrade-insecure-requests`,
+      "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://con-artist.rulathemtodos.workers.dev; font-src 'self' https://cdnjs.cloudflare.com; upgrade-insecure-requests",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
@@ -42,7 +11,8 @@
   };
   const CORS_ALLOWLIST = [
     window.location.origin,
-  ].concat(KNOWN_CONNECT_ORIGINS);
+    "https://con-artist.rulathemtodos.workers.dev",
+  ];
 
   function enforceClientSecurityPolicy() {
     Object.entries(SECURITY_HEADERS).forEach(([name, content]) => {
@@ -158,46 +128,11 @@
     return result;
   }
 
-  function getWorkerTarget(form) {
-    return String(form.getAttribute("data-worker-target") || "").trim();
-  }
-
-  async function relayFormToWorker(form, cleanedPayload, statusNode) {
-    const workerTarget = getWorkerTarget(form);
-    if (!workerTarget) return false;
-
-    const endpoint = PAGE_WORKER_ENDPOINTS[workerTarget];
-    if (!endpoint) return false;
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        source: window.location.pathname,
-        submitted_at: new Date().toISOString(),
-        payload: cleanedPayload,
-      }),
-    });
-
-    if (!response.ok) throw new Error("Worker relay failed with status " + response.status);
-
-    if (statusNode) {
-      statusNode.textContent =
-        workerTarget === "careers"
-          ? "Application sent securely. Thank you for applying."
-          : "Message sent securely. We will contact you soon.";
-    }
-
-    return true;
-  }
-
   function initSecureForms() {
     const forms = document.querySelectorAll("form");
     if (!forms.length) return;
 
-    forms
-      .filter((form) => form.id !== "chatbot-input-row")
-      .forEach((form) => {
+    forms.forEach((form) => {
       const message = document.createElement("small");
       message.className = "security-form-note";
       message.setAttribute("aria-live", "polite");
@@ -209,20 +144,6 @@
         const result = secureFormSubmission(form, message);
         if (result.blocked) {
           event.preventDefault();
-          return;
-        }
-
-        try {
-          const relayed = await relayFormToWorker(form, result.cleaned, message);
-          if (relayed) {
-            event.preventDefault();
-            form.reset();
-            return;
-          }
-        } catch (_err) {
-          event.preventDefault();
-          message.textContent =
-            "Secure delivery failed. Please try again in a moment.";
           return;
         }
 
@@ -238,7 +159,6 @@
       scanAndSanitizePayload,
       sha256Hex,
       corsAllowlist: CORS_ALLOWLIST.slice(),
-      workerEndpoints: { ...PAGE_WORKER_ENDPOINTS },
       frameworks: ["OWASP ASVS", "CISA CPG", "NIST CSF", "PCI DSS 4.0"],
     };
   }
