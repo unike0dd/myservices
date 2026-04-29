@@ -71,9 +71,8 @@
     const input = qs("#chatbot-input");
     const send = qs("#chatbot-send");
     const statusNode = ensureStatusNode(qs("#chatbot-header-controls"));
-    // Cloudflare Worker gateway used by the repo to route end-user data.
-    const CF_WORKER_BASE = "https://con-artist.rulathemtodos.workers.dev";
-    const CF_WORKER_CHATBOT = CF_WORKER_BASE + "/api/chat";
+    // Chat API removed from repository configuration.
+    const CF_WORKER_CHATBOT = "";
     const WORKER_MODE = "iframe_service_qa";
     const ORIGIN_ASSET_MAP = {
       "https://www.gabo.services":
@@ -298,7 +297,7 @@
     }
 
     function canTalkToWorker() {
-      return !!OPS_ASSET_ID;
+      return !!OPS_ASSET_ID && !!CF_WORKER_CHATBOT;
     }
 
     function isCorsAllowed(url) {

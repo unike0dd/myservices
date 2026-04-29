@@ -1,7 +1,7 @@
 (function () {
   const SECURITY_HEADERS = {
     "Content-Security-Policy":
-      "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://con-artist.rulathemtodos.workers.dev; font-src 'self' https://cdnjs.cloudflare.com; upgrade-insecure-requests",
+      "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'; font-src 'self' https://cdnjs.cloudflare.com; upgrade-insecure-requests",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
@@ -11,7 +11,6 @@
   };
   const CORS_ALLOWLIST = [
     window.location.origin,
-    "https://con-artist.rulathemtodos.workers.dev",
   ];
 
   function enforceClientSecurityPolicy() {
